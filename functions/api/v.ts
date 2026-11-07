@@ -184,13 +184,16 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env, waitUnti
       ).bind(id, clip(cf.country, 2) || null, device, label, clip(ua, 300) || null, browserOf(ua), osOf(ua)),
     ];
     let detail = clip(body.d, 200);
-    // A browser can arrive here carrying a markszymanski.co ID (../_shared/handoff.ts), so the same
-    // rule as there: a form's email never replaces one proven by a Stripe purchase.
+    // A later form's email re-ties the browser (someone who browsed as a Gmail and booked with a work
+    // address: the booking must carry that path, AIOS state/VISITORS.md). Except three ties that are
+    // facts, never replaced: a Stripe-proven email ('mbs-join'), one tied by hand ('manual...'), and
+    // Mark's own addresses (HIDDEN in Mission Control's src/data/journeys.js; keep the two in step),
+    // or his own test bookings rename his browsers (November 7, 2026).
     if (type === "identify") {
       const email = clip(body.e, 200).trim().toLowerCase();
       if (!EMAIL_RE.test(email)) return done(setCookie);
       stmts.push(env.DB.prepare(
-        "UPDATE visitors SET email = ?, identified_at = datetime('now'), identified_via = ? WHERE id = ? AND (email IS NULL OR identified_via <> 'mbs-join')"
+        "UPDATE visitors SET email = ?, identified_at = datetime('now'), identified_via = ? WHERE id = ? AND (email IS NULL OR (identified_via <> 'mbs-join' AND identified_via NOT LIKE 'manual%' AND email NOT IN ('mark@motive11.com', 'me@markszymanski.co')))"
       ).bind(email, detail || null, id));
       detail = `${email} via ${detail}`.slice(0, 200);
     }
