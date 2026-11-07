@@ -28,7 +28,7 @@ his content, and builders; this site links there and never copies its prices.
 | `/privacy`, `/cookie-policy`, `/disclaimer` | Termageddon embeds (license motive11.com in Motive11's Termageddon account) in `src/pages/*.astro` via `src/layouts/LegalLayout.astro`. The text is edited in Termageddon, never in the repo |
 | `/case-studies`, `/case-studies/<slug>` | `src/content/case-studies/*.md` (schema in `src/content.config.ts`) |
 | `/about` | `src/pages/about.astro` |
-| `/book`, `/book/<slug>` | `src/pages/book/index.astro`; `public/_redirects` rewrites every booking path to it |
+| `/book`, `/book/<slug>` | `src/pages/book/index.astro`; `public/_redirects` rewrites every booking path to it. The bare `/book` goes home while no booking type is public (`functions/book/index.ts`) |
 | `/terms`, `/ai-policy` | `src/pages/*.astro` via `src/layouts/LegalLayout.astro` |
 
 Testimonials are read at build time from `testimonials.markszymanski.co` by id (`src/lib/testimonials.ts`).
