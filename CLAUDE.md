@@ -23,6 +23,8 @@ Details in `README.md`.
   buttoned up. markszymanski.co keeps the longer builder versions; never sync one from the other.
 - **Brand colors mirror `AIOS entities/motive11/brand/brand.json`** in `src/styles/global.css`. Change both
   in the same task.
+- **Every new page ships with its share image.** `npm run build` makes it in `public/og/`; commit it with
+  the page and look at it first. How it works: `README.md`, "Share images".
 
 ## Content-Security-Policy: new outside domains go in `public/_headers`
 

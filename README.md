@@ -36,6 +36,24 @@ A failed fetch drops the quote and the build carries on, so a rebuild picks up e
 
 Dark mode is the default; the header toggle stores `light` or `dark` in `localStorage`.
 
+## Share images
+
+Every page shares its own image (since November 8, 2026): Mark's full-body photo on the right, the page's
+title and one line on the left, Motive11's charcoal and orange. Same layout as markszymanski.co.
+`scripts/og/generate.py` renders them from a built `dist/` into `public/og/<path>.jpg` (3600x1890) with
+Playwright from the AIOS venv, reading the colors, logo, and font from AIOS `entities/motive11/brand/brand.json`
+and the photo from AIOS `entities/szymanski-media/brand/faces/mark-fullbody.png`. `src/lib/og.ts` makes
+`Head.astro` use a page's image when the file exists, else `/og/home.jpg`. Hand-written titles and lines
+live in `scripts/og/pages.json`; everything else comes from the page's own title and description.
+
+**New pages get theirs automatically.** A local `npm run build` ends with `scripts/og/postbuild.mjs`, which
+runs `generate.py --missing` and lists the images it made. **Commit those files with the page**: Cloudflare
+skips this step (no AIOS there), so an uncommitted image never reaches production. Build once more so local
+`dist/` points at them. Re-render a card after changing its title or line with
+`MSYS_NO_PATHCONV=1 C:/Users/marks/AIOS/.venv/Scripts/python.exe scripts/og/generate.py /that-path`. Pages
+nobody shares (legal pages, `/me`, `/book`) go in `SKIP` in `generate.py` and keep the home card, as do
+the booking pages under `/book/<slug>`.
+
 ## Visitor ledger
 
 The same visitor ledger markszymanski.co runs (AIOS `state/VISITORS.md`): every page view (with utm tags and

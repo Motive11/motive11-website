@@ -1,0 +1,49 @@
+<!doctype html>
+<meta charset="utf-8">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1200px;height:630px;overflow:hidden;background:var(--bg);font-family:Satoshi,sans-serif;color:var(--fg)}
+.glow{position:absolute;right:-140px;top:-60px;width:860px;height:860px;border-radius:50%;
+  background:radial-gradient(circle,color-mix(in srgb,var(--glow) 42%,transparent) 0%,color-mix(in srgb,var(--glow) 13%,transparent) 42%,transparent 68%)}
+.dots{position:absolute;inset:0;background-image:radial-gradient(color-mix(in srgb,var(--fg) 7%,transparent) 1.2px,transparent 1.3px);background-size:22px 22px;
+  -webkit-mask-image:linear-gradient(90deg,#000 0%,rgba(0,0,0,.35) 55%,transparent 80%)}
+.me{position:absolute;right:-30px;top:34px;height:930px}
+.logo{position:absolute;left:64px;top:56px;height:40px}
+.col{position:absolute;left:64px;top:132px;bottom:118px;width:600px;display:flex;flex-direction:column;justify-content:center}
+.tag{align-self:flex-start;background:var(--accent);color:var(--bg);font-weight:900;font-size:21px;letter-spacing:.1em;padding:7px 16px;border-radius:9px;margin-bottom:22px;text-transform:uppercase}
+.tag:empty{display:none}
+h1{text-wrap:balance;font-weight:900;font-size:74px;line-height:1.03;letter-spacing:-.025em}
+p{margin-top:22px;font-size:28px;line-height:1.32;color:color-mix(in srgb,var(--fg) 72%,var(--bg));font-weight:500}
+p:empty{display:none}
+.site{position:absolute;left:64px;bottom:52px;font-weight:700;font-size:26px;color:color-mix(in srgb,var(--fg) 52%,var(--bg))}
+body.home .col{width:640px}
+body.home .site{color:var(--accent);font-weight:900;letter-spacing:.06em;text-transform:uppercase}
+</style>
+<div class="glow"></div><div class="dots"></div>
+<img class="logo" id="logo" alt="">
+<img class="me" id="me" alt="">
+<div class="col"><div class="tag" id="tag"></div><h1 id="title"></h1><p id="line"></p></div>
+<div class="site" id="site">motive11.com</div>
+<script>
+window.setBrand = function (b) {
+  var s = document.documentElement.style;
+  s.setProperty("--bg", b.bg); s.setProperty("--fg", b.fg); s.setProperty("--accent", b.accent); s.setProperty("--glow", b.glow);
+  var l = document.createElement("link"); l.rel = "stylesheet"; l.href = b.font; document.head.appendChild(l);
+  document.getElementById("logo").src = b.logo;
+  document.getElementById("me").src = b.photo;
+};
+window.setCard = function (c) {
+  document.body.className = c.home ? "home" : "";
+  document.getElementById("tag").textContent = c.tag || "";
+  document.getElementById("title").textContent = c.title;
+  document.getElementById("line").textContent = c.line || "";
+  document.getElementById("site").textContent = c.site || "motive11.com";
+  var h = document.getElementById("title"), p = document.getElementById("line"), col = document.querySelector(".col");
+  var size = c.home ? 82 : 74;
+  h.style.fontSize = size + "px"; p.style.fontSize = "";
+  // Shrink the title until the column fits: a long title runs four lines at 74px.
+  while (col.scrollHeight > col.clientHeight + 1 && size > 40) { size -= 3; h.style.fontSize = size + "px"; }
+  if (col.scrollHeight > col.clientHeight + 1) { p.style.fontSize = "22px"; }
+  return document.fonts.ready;
+};
+</script>

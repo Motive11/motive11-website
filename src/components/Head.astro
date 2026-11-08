@@ -2,6 +2,7 @@
 import { Font } from "astro:assets";
 import { site } from "../lib/site";
 import { graph, webPage } from "../lib/schema";
+import { ogFor } from "../lib/og";
 
 interface Props {
   title: string;
@@ -13,7 +14,7 @@ interface Props {
 
 const { title, description, ogType = "website", noindex = false, schema = [] } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
-const ogImage = `${site.url}/images/icon-512.png`;
+const ogImage = new URL(ogFor(Astro.url.pathname), site.url).href;
 const jsonLd = graph(webPage(canonical, title, description), ...schema);
 ---
 
@@ -45,7 +46,7 @@ const jsonLd = graph(webPage(canonical, title, description), ...schema);
 <meta property="og:image" content={ogImage} />
 <meta property="og:site_name" content={site.name} />
 <meta property="og:locale" content="en_US" />
-<meta name="twitter:card" content="summary" />
+<meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content={title} />
 <meta name="twitter:description" content={description} />
 <meta name="twitter:image" content={ogImage} />
