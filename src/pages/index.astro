@@ -11,12 +11,17 @@ import Testimonial from "../components/Testimonial.astro";
 import { fetchTestimonial } from "../lib/testimonials";
 import portrait from "../assets/mark/portrait.webp";
 import shefflerPortal from "../assets/case-studies/sheffler-and-company/portal-leads-queue.webp";
-import shefflerSite from "../assets/case-studies/sheffler-and-company/new-home-desktop.webp";
-import pwSite from "../assets/case-studies/polverini-and-wiater/new-home-desktop.webp";
-import valorSite from "../assets/case-studies/valor-pgh/new-home-desktop.webp";
-import v3Site from "../assets/case-studies/valiant-3-communications/new-home-desktop.webp";
-import qclSite from "../assets/case-studies/quality-choice-landscaping/new-home-desktop.webp";
-import bshfSite from "../assets/case-studies/bus-stops-here-foundation/new-home-desktop.webp";
+// Each still is frame one of that site's recording, so the video takes over without a jump.
+// Recordings: 1440x900 at 2x in headless Chrome, hold on the hero then scroll; R2 bucket motive11-media.
+// Re-record a site and bump -v1 in its URL, since those files are cached as immutable.
+import shefflerSite from "../assets/showcase/sheffler.webp";
+import pwSite from "../assets/showcase/pw.webp";
+import valorSite from "../assets/showcase/valor.webp";
+import v3Site from "../assets/showcase/v3.webp";
+import qclSite from "../assets/showcase/qcl.webp";
+import bshfSite from "../assets/showcase/bshf.webp";
+
+const media = "https://media.motive11.com/showcase";
 
 // Owners' own words, from the symptom map in AIOS entities/szymanski-media/context/offer-stack/
 // sales-map.html. One per kind of pain, and mostly not the six the Fractional page already pairs with
@@ -39,13 +44,14 @@ const quote = bud && { ...bud, text: "When my team finds something that needs to
 
 const showcase = [
   { img: shefflerPortal, addr: "Sheffler & Company portal", alt: "The lead queue in the portal I built for Sheffler & Company, shown with demo data", caption: "A proposal portal for Sheffler & Company, an engineering and surveying firm", href: "/case-studies/sheffler-and-company" },
-  { img: shefflerSite, addr: "shefflerco.com", alt: "The Sheffler & Company website", caption: "The Sheffler & Company website, rebuilt before the portal", href: "/case-studies/sheffler-and-company" },
-  { img: pwSite, addr: "pw-legal.com", alt: "The Polverini & Wiater website", caption: "A new website for Polverini & Wiater, a law firm in the middle of a rebrand", href: "/case-studies/polverini-and-wiater" },
-  { img: valorSite, addr: "valorpgh.com", alt: "The Valor PGH website", caption: "A website and lead system for Valor PGH, an insurance and real estate agency", href: "/case-studies/valor-pgh" },
-  { img: v3Site, addr: "valiant3communications.com", alt: "The Valiant 3 website", caption: "A rebuilt website for Valiant 3, a sports agency", href: "/case-studies/valiant-3-communications" },
-  { img: qclSite, addr: "qualitychoicelandscaping.com", alt: "The Quality Choice Landscaping website", caption: "A website and back office for Quality Choice Landscaping", href: "/case-studies/quality-choice-landscaping" },
-  { img: bshfSite, addr: "thebusstopsherefoundation.org", alt: "The Bus Stops Here Foundation website", caption: "One website for The Jerome Bettis Bus Stops Here Foundation", href: "/case-studies/bus-stops-here-foundation" },
+  { img: shefflerSite, video: `${media}/sheffler-v1.mp4`, addr: "shefflerco.com", alt: "The Sheffler & Company website", caption: "The Sheffler & Company website, rebuilt before the portal", href: "/case-studies/sheffler-and-company" },
+  { img: pwSite, video: `${media}/pw-v1.mp4`, addr: "pw-legal.com", alt: "The Polverini & Wiater website", caption: "A new website for Polverini & Wiater, a law firm in the middle of a rebrand", href: "/case-studies/polverini-and-wiater" },
+  { img: valorSite, video: `${media}/valor-v1.mp4`, addr: "valorpgh.com", alt: "The Valor PGH website", caption: "A website and lead system for Valor PGH, an insurance and real estate agency", href: "/case-studies/valor-pgh" },
+  { img: v3Site, video: `${media}/v3-v1.mp4`, addr: "valiant3communications.com", alt: "The Valiant 3 website", caption: "A rebuilt website for Valiant 3, a sports agency", href: "/case-studies/valiant-3-communications" },
+  { img: qclSite, video: `${media}/qcl-v1.mp4`, addr: "qualitychoicelandscaping.com", alt: "The Quality Choice Landscaping website", caption: "A website and back office for Quality Choice Landscaping", href: "/case-studies/quality-choice-landscaping" },
+  { img: bshfSite, video: `${media}/bshf-v1.mp4`, addr: "thebusstopsherefoundation.org", alt: "The Bus Stops Here Foundation website", caption: "One website for The Jerome Bettis Bus Stops Here Foundation", href: "/case-studies/bus-stops-here-foundation" },
 ];
+const lockIcon = "M5 7V5a3 3 0 0 1 6 0v2h.5A1.5 1.5 0 0 1 13 8.5v5a1.5 1.5 0 0 1-1.5 1.5h-7A1.5 1.5 0 0 1 3 13.5v-5A1.5 1.5 0 0 1 4.5 7H5Zm1.5 0h3V5a1.5 1.5 0 0 0-3 0v2Z";
 ---
 
 <BaseLayout
@@ -66,12 +72,15 @@ const showcase = [
         <div class="browser">
           <div class="bar">
             <div class="lights"><i></i><i></i><i></i></div>
-            <div class="addr" data-addr>{showcase[0].addr}</div>
+            <div class="addr"><svg class="lock" viewBox="0 0 16 16" aria-hidden="true"><path d={lockIcon} /></svg><span data-addr>{showcase[0].addr}</span></div>
             <div class="spacer"></div>
           </div>
           <div class="screens" data-track>
             {showcase.map((s, i) => (
-              <Image class:list={["screen", { "is-on": i === 0 }]} src={s.img} alt={s.alt} widths={[800, 1400, 2200]} sizes="(min-width: 1140px) 1100px, 100vw" loading="eager" data-screen data-addr-text={s.addr} data-caption={s.caption} data-href={s.href} />
+              <div class:list={["screen", { "is-on": i === 0 }]} data-screen data-addr-text={s.addr} data-caption={s.caption} data-href={s.href}>
+                <Image src={s.img} alt={s.alt} widths={[800, 1400, 2200]} sizes="(min-width: 1140px) 1100px, 100vw" loading="eager" />
+                {s.video && <video muted playsinline preload="none" aria-hidden="true" data-video={s.video}></video>}
+              </div>
             ))}
           </div>
         </div>
@@ -202,8 +211,31 @@ const showcase = [
     var track = root.querySelector("[data-track]");
     // Below 1024px the screens are a native scroll-snap row so a finger can swipe them; above it they crossfade.
     var swipe = matchMedia("(max-width: 1023px)");
-    var i = 0, timer = null, settle = null;
+    var calm = matchMedia("(prefers-reduced-motion: reduce)");
+    var lean = navigator.connection && navigator.connection.saveData;
+    var vids = Array.prototype.map.call(screens, function (s) { return lean ? null : s.querySelector("video"); });
+    var i = 0, timer = null, settle = null, held = false, inView = true;
+
+    // Only the slide on screen and the one after it ever download, so a visitor who never watches
+    // past the first site pays for two recordings, not six.
+    function load(v) { if (v && !v.src && !calm.matches) { v.src = v.dataset.video; v.preload = "auto"; } }
+    function play(n) {
+      var v = vids[n];
+      if (!v || calm.matches || !inView) return;
+      load(v);
+      var p = v.play();
+      // iOS Low Power Mode refuses muted autoplay; treat that slide as a still from then on.
+      if (p && p.catch) p.catch(function (e) { if (e && e.name === "NotAllowedError") { vids[n] = null; if (n === i) start(); } });
+    }
+    vids.forEach(function (v, n) {
+      if (!v) return;
+      v.addEventListener("playing", function () { v.classList.add("is-live"); load(vids[(n + 1) % vids.length]); });
+      v.addEventListener("ended", function () { if (n === i && !held) show(i + 1); });
+      v.addEventListener("error", function () { vids[n] = null; if (n === i) start(); });
+    });
+
     function show(n, fromScroll) {
+      var was = vids[i], left = i;
       screens[i].classList.remove("is-on"); dots[i].classList.remove("is-on"); dots[i].setAttribute("aria-selected", "false");
       i = (n + screens.length) % screens.length;
       screens[i].classList.add("is-on"); dots[i].classList.add("is-on"); dots[i].setAttribute("aria-selected", "true");
@@ -211,15 +243,30 @@ const showcase = [
       cap.textContent = screens[i].dataset.caption;
       link.setAttribute("href", screens[i].dataset.href);
       if (swipe.matches && !fromScroll) track.scrollTo({ left: i * track.clientWidth, behavior: "smooth" });
+      // Rewind after the crossfade, so the slide fades out still moving and comes back on its first frame.
+      if (was && left !== i) setTimeout(function () { if (i !== left) { was.pause(); was.currentTime = 0; } }, 750);
+      play(i);
+      start();
     }
-    var calm = matchMedia("(prefers-reduced-motion: reduce)");
-    function start() { if (!timer && !calm.matches) timer = setInterval(function () { show(i + 1); }, 4500); }
-    function stop() { clearInterval(timer); timer = null; }
-    dots.forEach(function (d) { d.addEventListener("click", function () { stop(); show(Number(d.dataset.dot)); start(); }); });
-    root.addEventListener("mouseenter", stop);
-    root.addEventListener("mouseleave", start);
-    track.addEventListener("touchstart", stop, { passive: true });
-    track.addEventListener("touchend", start, { passive: true });
+
+    // A recording advances the slideshow when it ends. The timer covers stills, and is the backstop for a
+    // recording that stalls on a slow connection.
+    function start() {
+      clearTimeout(timer); timer = null;
+      if (held || calm.matches || !inView) return;
+      var v = vids[i];
+      if (v && v.ended) timer = setTimeout(function () { show(i + 1); }, 1200);
+      else timer = setTimeout(function () { show(i + 1); }, v ? 18000 : 4500);
+    }
+    function stop() { clearTimeout(timer); timer = null; }
+    function hold() { held = true; stop(); }
+    function release() { held = false; start(); }
+
+    dots.forEach(function (d) { d.addEventListener("click", function () { show(Number(d.dataset.dot)); }); });
+    root.addEventListener("mouseenter", hold);
+    root.addEventListener("mouseleave", release);
+    track.addEventListener("touchstart", hold, { passive: true });
+    track.addEventListener("touchend", release, { passive: true });
     track.addEventListener("scroll", function () {
       if (!swipe.matches) return;
       clearTimeout(settle);
@@ -229,6 +276,22 @@ const showcase = [
       }, 90);
     }, { passive: true });
     swipe.addEventListener("change", function () { if (swipe.matches) track.scrollLeft = i * track.clientWidth; });
+
+    // Off screen nothing plays, so a visitor reading further down isn't decoding video they can't see.
+    if ("IntersectionObserver" in window) {
+      new IntersectionObserver(function (es) {
+        inView = es[0].isIntersecting;
+        if (inView) { play(i); start(); }
+        else { stop(); if (vids[i]) vids[i].pause(); }
+      }).observe(root);
+    }
+    document.addEventListener("visibilitychange", function () {
+      if (document.hidden) { stop(); if (vids[i]) vids[i].pause(); }
+      else if (inView) { play(i); start(); }
+    });
+    if (document.readyState === "complete") load(vids[1]);
+    else addEventListener("load", function () { load(vids[1]); });
+    play(i);
     start();
   })();
 </script>
@@ -255,12 +318,19 @@ const showcase = [
   .browser { position: relative; max-width: 1100px; margin: 0 auto; border-radius: 14px; background: var(--surface); border: 1px solid var(--line); padding: 0 8px 8px; box-shadow: 0 40px 90px -30px var(--shadow); }
   .bar { display: flex; align-items: center; gap: 14px; height: 40px; padding-inline: 8px; }
   .lights { display: flex; gap: 7px; }
-  .lights i { width: 11px; height: 11px; border-radius: 50%; background: var(--line); }
-  .addr { flex: 1; max-width: 340px; margin: 0 auto; height: 24px; border-radius: 6px; background: var(--surface-2); color: var(--faint); font-size: 12px; display: flex; align-items: center; justify-content: center; white-space: nowrap; overflow: hidden; padding-inline: 10px; }
+  .lights i { width: 11px; height: 11px; border-radius: 50%; background: #FF5F57; box-shadow: inset 0 0 0 0.5px rgba(0, 0, 0, 0.14); }
+  .lights i:nth-child(2) { background: #FEBC2E; }
+  .lights i:nth-child(3) { background: #28C840; }
+  .addr { flex: 1; max-width: 340px; margin: 0 auto; height: 24px; border-radius: 6px; background: var(--surface-2); color: var(--muted); font-size: 12px; display: flex; align-items: center; justify-content: center; gap: 6px; white-space: nowrap; overflow: hidden; padding-inline: 10px; }
+  .addr span { overflow: hidden; text-overflow: ellipsis; }
+  .lock { width: 10px; height: 10px; flex: none; fill: currentColor; opacity: 0.7; }
   .spacer { width: 47px; }
   .screens { position: relative; aspect-ratio: 16 / 10; border-radius: 7px; overflow: hidden; background: var(--surface-2); }
-  .screens :global(.screen) { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top; opacity: 0; transition: opacity 0.7s ease; }
-  .screens :global(.screen.is-on) { opacity: 1; }
+  .screen { position: absolute; inset: 0; opacity: 0; transition: opacity 0.7s ease; }
+  .screen.is-on { opacity: 1; }
+  .screen :global(img), .screen video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top; }
+  .screen video { opacity: 0; transition: opacity 0.3s ease; }
+  .screen video.is-live { opacity: 1; }
   .showcase-foot { position: relative; display: grid; justify-items: center; gap: 14px; margin-top: 22px; }
   .showcase-foot .caption { margin: 0; min-height: 3em; }
   .dots { display: flex; gap: 8px; }
@@ -322,7 +392,7 @@ const showcase = [
   @media (max-width: 1023px) {
     .screens { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; scrollbar-width: none; }
     .screens::-webkit-scrollbar { display: none; }
-    .screens :global(.screen) { position: static; flex: 0 0 100%; opacity: 1; transition: none; scroll-snap-align: start; scroll-snap-stop: always; }
+    .screen { position: relative; flex: 0 0 100%; opacity: 1; transition: none; scroll-snap-align: start; scroll-snap-stop: always; }
   }
   @media (max-width: 560px) {
     .sub { font-size: 18px; }
