@@ -79,7 +79,7 @@ const lockIcon = "M5 7V5a3 3 0 0 1 6 0v2h.5A1.5 1.5 0 0 1 13 8.5v5a1.5 1.5 0 0 1
             {showcase.map((s, i) => (
               <div class:list={["screen", { "is-on": i === 0 }]} data-screen data-addr-text={s.addr} data-caption={s.caption} data-href={s.href}>
                 <Image src={s.img} alt={s.alt} widths={[800, 1400, 2200]} sizes="(min-width: 1140px) 1100px, 100vw" loading="eager" />
-                {s.video && <video muted playsinline preload="none" aria-hidden="true" data-video={s.video}></video>}
+                {s.video && <video muted loop playsinline preload="none" aria-hidden="true" data-video={s.video}></video>}
               </div>
             ))}
           </div>
@@ -234,7 +234,8 @@ const lockIcon = "M5 7V5a3 3 0 0 1 6 0v2h.5A1.5 1.5 0 0 1 13 8.5v5a1.5 1.5 0 0 1
     vids.forEach(function (v, n) {
       if (!v) return;
       v.addEventListener("playing", function () { v.classList.add("is-live"); load(nextVideo(n)); });
-      v.addEventListener("ended", function () { if (n === i && !held) show(i + 1); });
+      // Each recording ends on half a second of one held frame, so the crossfade starts while it is still moving.
+      v.addEventListener("timeupdate", function () { if (n === i && !held && v.duration && v.currentTime > v.duration - 1.3) show(i + 1); });
       v.addEventListener("error", function () { vids[n] = null; if (n === i) start(); });
     });
 
@@ -253,14 +254,13 @@ const lockIcon = "M5 7V5a3 3 0 0 1 6 0v2h.5A1.5 1.5 0 0 1 13 8.5v5a1.5 1.5 0 0 1
       start();
     }
 
-    // A recording advances the slideshow when it ends. The timer covers stills, and is the backstop for a
-    // recording that stalls on a slow connection.
+    // A recording advances the slideshow just before it ends. The timer covers stills, and is the backstop for
+    // a recording that stalls on a slow connection.
     function start() {
       clearTimeout(timer); timer = null;
       if (held || calm.matches || !inView) return;
       var v = vids[i];
-      if (v && v.ended) timer = setTimeout(function () { show(i + 1); }, 1200);
-      else timer = setTimeout(function () { show(i + 1); }, v ? 18000 : 4500);
+      timer = setTimeout(function () { show(i + 1); }, v ? 18000 : 4500);
     }
     function stop() { clearTimeout(timer); timer = null; }
     function hold() { held = true; stop(); }
