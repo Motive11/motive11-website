@@ -38,20 +38,25 @@ Dark mode is the default; the header toggle stores `light` or `dark` in `localSt
 
 ## Home page showcase
 
-The browser frame in the home hero cycles through client work (since November 9, 2026). The Sheffler portal
-is a still, since it sits behind a login. Every other slide is a real recording of that client's live home
-page: it holds on the hero while the site's own video plays, then eases down the page, with no sound. Each slide
-shows its still (the recording's first frame, `src/assets/showcase/<slug>.webp`) until the video starts, and a
-slide moves on when its recording ends. Only the slide on screen and the next one download, about 1.3 to 3 MB
-each. Nothing plays while the hero is off screen or the tab is hidden. Visitors with reduced motion or
-Data Saver turned on get the stills.
+The browser frame in the home hero cycles through client work (since November 9, 2026). Sites whose hero
+has its own background video (Valiant 3, Quality Choice Landscaping, Bus Stops Here) play a 7-second
+silent recording of just that hero, with no scrolling, and alternate with stills (the Sheffler portal, which
+is behind a login, and the Sheffler, Polverini & Wiater, and Valor sites, whose heroes don't move). A recording's
+still is its first frame (`src/assets/showcase/<slug>.webp`), so the video takes over without a jump, and a
+slide moves on when its recording ends; a still holds 4.5 seconds. Only the recording on screen and the next
+one download (1.1 to 1.7 MB each). Nothing plays while the hero is off screen or the tab is hidden, and
+visitors with reduced motion or Data Saver get the stills.
+
+**Never record a scroll.** The first version (November 9, 2026) also scrolled each home page and Mark
+rejected it: the capture delivers frames unevenly, so a recorded scroll judders and stalls no matter how it
+is encoded. If a scroll ever comes back, animate a tall full-page screenshot in the page instead.
 
 The MP4s live in R2 (bucket `motive11-media`, served at `media.motive11.com`, allowed in `public/_headers`)
 and are cached as immutable. **Re-recording a site therefore always takes a new version number:**
-`C:/Users/marks/AIOS/.venv/Scripts/python.exe scripts/showcase/record.py v3 --version 2` records it, rewrites
-its still, and uploads `showcase/v3-v2.mp4`; then change that slide's `-v1` to `-v2` in `src/pages/index.astro`
-and commit the still with it. `--no-upload` keeps the MP4 local to look at first. Re-record a site when its
-home page changes visibly.
+`C:/Users/marks/AIOS/.venv/Scripts/python.exe scripts/showcase/record.py v3 --version 3` records it, rewrites
+its still, and uploads `showcase/v3-v3.mp4` (it refuses a version that is already published); then change
+that slide's `-vN` in `src/pages/index.astro` and commit the still with it. `--no-upload` keeps the MP4 and
+still in a temp folder to look at first. Re-record a site when its hero changes.
 
 ## Share images
 

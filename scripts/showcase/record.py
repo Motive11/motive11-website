@@ -1,5 +1,7 @@
-"""Recordings for the home page showcase: each client site's live home page, held on the hero while its
-own video plays, then eased down the page. Writes the still (src/assets/showcase/<slug>.webp, the
+"""Recordings for the home page showcase: a few seconds of each client site's live home page hero while
+its own background video plays. No scrolling: a captured scroll judders (the screencast delivers frames
+unevenly), and Mark rejected it on November 9, 2026. Only sites whose hero moves are here; the rest stay
+stills in index.astro. Writes the still (src/assets/showcase/<slug>.webp, the
 recording's first frame) and uploads the silent MP4 to R2 as motive11-media/showcase/<slug>-v<N>.mp4,
 served at media.motive11.com. src/pages/index.astro points at those URLs.
 
@@ -30,31 +32,16 @@ from playwright.sync_api import sync_playwright
 REPO = Path(__file__).resolve().parents[2]
 AIOS = Path("C:/Users/marks/AIOS")
 
-# hold: seconds on the hero before scrolling. Sites whose hero is a still photo get a short hold,
-# or the first few seconds show nothing moving.
 SITES = {
-    "sheffler": {"url": "https://shefflerco.com", "hold": 4.5, "scroll": 7.0, "px": 2400},
-    "pw": {"url": "https://pw-legal.com", "hold": 2.0, "scroll": 9.5, "px": 3400},
-    "valor": {"url": "https://valorpgh.com", "hold": 2.0, "scroll": 9.5, "px": 3400},
-    "v3": {"url": "https://valiant3communications.com", "hold": 4.5, "scroll": 7.0, "px": 2400},
-    "qcl": {"url": "https://qualitychoicelandscaping.com", "hold": 4.5, "scroll": 7.0, "px": 2400},
-    "bshf": {"url": "https://thebusstopsherefoundation.org", "hold": 4.5, "scroll": 7.0, "px": 2400},
+    "v3": "https://valiant3communications.com",
+    "qcl": "https://qualitychoicelandscaping.com",
+    "bshf": "https://thebusstopsherefoundation.org",
 }
+SECONDS = 6
 
 W, H, DSF = 1440, 900, 2
 
-EASE_SCROLL = """([px, ms]) => new Promise(done => {
-    const y0 = window.scrollY, t0 = performance.now();
-    const ease = t => t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t + 2, 3) / 2;
-    (function step(now) {
-        const t = Math.min(1, (now - t0) / ms);
-        window.scrollTo(0, y0 + px * ease(t));
-        t < 1 ? requestAnimationFrame(step) : done();
-    })(t0);
-})"""
-
-
-def capture(site: dict, frames: Path) -> list[float]:
+def capture(url: str, frames: Path) -> list[float]:
     stamps: list[float] = []
     with sync_playwright() as p:
         # Chrome, not Playwright's Chromium: Chromium ships without H.264, so the sites' mp4 heroes never play.
@@ -62,16 +49,11 @@ def capture(site: dict, frames: Path) -> list[float]:
                                     args=["--autoplay-policy=no-user-gesture-required", "--hide-scrollbars"])
         ctx = browser.new_context(viewport={"width": W, "height": H}, device_scale_factor=DSF)
         page = ctx.new_page()
-        page.goto(site["url"], wait_until="load", timeout=60000)
+        page.goto(url, wait_until="load", timeout=60000)
         try:
             page.wait_for_load_state("networkidle", timeout=15000)
         except Exception:
             pass
-        # Walk the page once first so lazy images and scroll reveals have already fired; the recorded pass
-        # would otherwise show blanks popping in.
-        page.evaluate("""async (px) => { for (let y = 0; y <= px + 900; y += 300) {
-            window.scrollTo(0, y); await new Promise(r => setTimeout(r, 120)); } }""", site["px"])
-        page.evaluate("window.scrollTo(0, 0)")
         page.wait_for_timeout(2500)
 
         # CDP screencast instead of Playwright's record_video, whose fixed low-bitrate VP8 blurs small text.
@@ -85,9 +67,7 @@ def capture(site: dict, frames: Path) -> list[float]:
         cdp.on("Page.screencastFrame", on_frame)
         cdp.send("Page.startScreencast", {"format": "jpeg", "quality": 92, "maxWidth": W * DSF,
                                           "maxHeight": H * DSF, "everyNthFrame": 1})
-        page.wait_for_timeout(int(site["hold"] * 1000))
-        page.evaluate(EASE_SCROLL, [site["px"], int(site["scroll"] * 1000)])
-        page.wait_for_timeout(1200)
+        page.wait_for_timeout(SECONDS * 1000)
         cdp.send("Page.stopScreencast")
         page.wait_for_timeout(300)
         browser.close()

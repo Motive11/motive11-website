@@ -11,9 +11,9 @@ import Testimonial from "../components/Testimonial.astro";
 import { fetchTestimonial } from "../lib/testimonials";
 import portrait from "../assets/mark/portrait.webp";
 import shefflerPortal from "../assets/case-studies/sheffler-and-company/portal-leads-queue.webp";
-// Each still is frame one of that site's recording, so the video takes over without a jump.
-// Recordings: 1440x900 at 2x in headless Chrome, hold on the hero then scroll; R2 bucket motive11-media.
-// Re-record a site and bump -v1 in its URL, since those files are cached as immutable.
+// A recorded site's still is frame one of its recording, so the video takes over without a jump.
+// Recordings are only of heroes that move (scripts/showcase/record.py); R2 bucket motive11-media.
+// Re-record a site and bump -vN in its URL, since those files are cached as immutable.
 import shefflerSite from "../assets/showcase/sheffler.webp";
 import pwSite from "../assets/showcase/pw.webp";
 import valorSite from "../assets/showcase/valor.webp";
@@ -43,13 +43,13 @@ const bud = await fetchTestimonial("8b67a481-a547-4d8f-a6e1-c4554bb6f0fe");
 const quote = bud && { ...bud, text: "When my team finds something that needs to change, Mark fixes it fast, often the same day. At this point he knows how our business runs as well as anyone in the building." };
 
 const showcase = [
+  { img: v3Site, video: `${media}/v3-v2.mp4`, addr: "valiant3communications.com", alt: "The Valiant 3 website", caption: "A rebuilt website for Valiant 3, a sports agency", href: "/case-studies/valiant-3-communications" },
   { img: shefflerPortal, addr: "Sheffler & Company portal", alt: "The lead queue in the portal I built for Sheffler & Company, shown with demo data", caption: "A proposal portal for Sheffler & Company, an engineering and surveying firm", href: "/case-studies/sheffler-and-company" },
-  { img: shefflerSite, video: `${media}/sheffler-v1.mp4`, addr: "shefflerco.com", alt: "The Sheffler & Company website", caption: "The Sheffler & Company website, rebuilt before the portal", href: "/case-studies/sheffler-and-company" },
-  { img: pwSite, video: `${media}/pw-v1.mp4`, addr: "pw-legal.com", alt: "The Polverini & Wiater website", caption: "A new website for Polverini & Wiater, a law firm in the middle of a rebrand", href: "/case-studies/polverini-and-wiater" },
-  { img: valorSite, video: `${media}/valor-v1.mp4`, addr: "valorpgh.com", alt: "The Valor PGH website", caption: "A website and lead system for Valor PGH, an insurance and real estate agency", href: "/case-studies/valor-pgh" },
-  { img: v3Site, video: `${media}/v3-v1.mp4`, addr: "valiant3communications.com", alt: "The Valiant 3 website", caption: "A rebuilt website for Valiant 3, a sports agency", href: "/case-studies/valiant-3-communications" },
-  { img: qclSite, video: `${media}/qcl-v1.mp4`, addr: "qualitychoicelandscaping.com", alt: "The Quality Choice Landscaping website", caption: "A website and back office for Quality Choice Landscaping", href: "/case-studies/quality-choice-landscaping" },
-  { img: bshfSite, video: `${media}/bshf-v1.mp4`, addr: "thebusstopsherefoundation.org", alt: "The Bus Stops Here Foundation website", caption: "One website for The Jerome Bettis Bus Stops Here Foundation", href: "/case-studies/bus-stops-here-foundation" },
+  { img: qclSite, video: `${media}/qcl-v2.mp4`, addr: "qualitychoicelandscaping.com", alt: "The Quality Choice Landscaping website", caption: "A website and back office for Quality Choice Landscaping", href: "/case-studies/quality-choice-landscaping" },
+  { img: shefflerSite, addr: "shefflerco.com", alt: "The Sheffler & Company website", caption: "The Sheffler & Company website, rebuilt before the portal", href: "/case-studies/sheffler-and-company" },
+  { img: bshfSite, video: `${media}/bshf-v2.mp4`, addr: "thebusstopsherefoundation.org", alt: "The Bus Stops Here Foundation website", caption: "One website for The Jerome Bettis Bus Stops Here Foundation", href: "/case-studies/bus-stops-here-foundation" },
+  { img: pwSite, addr: "pw-legal.com", alt: "The Polverini & Wiater website", caption: "A new website for Polverini & Wiater, a law firm in the middle of a rebrand", href: "/case-studies/polverini-and-wiater" },
+  { img: valorSite, addr: "valorpgh.com", alt: "The Valor PGH website", caption: "A website and lead system for Valor PGH, an insurance and real estate agency", href: "/case-studies/valor-pgh" },
 ];
 const lockIcon = "M5 7V5a3 3 0 0 1 6 0v2h.5A1.5 1.5 0 0 1 13 8.5v5a1.5 1.5 0 0 1-1.5 1.5h-7A1.5 1.5 0 0 1 3 13.5v-5A1.5 1.5 0 0 1 4.5 7H5Zm1.5 0h3V5a1.5 1.5 0 0 0-3 0v2Z";
 ---
@@ -216,9 +216,13 @@ const lockIcon = "M5 7V5a3 3 0 0 1 6 0v2h.5A1.5 1.5 0 0 1 13 8.5v5a1.5 1.5 0 0 1
     var vids = Array.prototype.map.call(screens, function (s) { return lean ? null : s.querySelector("video"); });
     var i = 0, timer = null, settle = null, held = false, inView = true;
 
-    // Only the slide on screen and the one after it ever download, so a visitor who never watches
-    // past the first site pays for two recordings, not six.
+    // Only the recording on screen and the next one ever download, so a visitor who never watches
+    // past the first site pays for two recordings, not all of them.
     function load(v) { if (v && !v.src && !calm.matches) { v.src = v.dataset.video; v.preload = "auto"; } }
+    function nextVideo(n) {
+      for (var k = 1; k < vids.length; k++) { var v = vids[(n + k) % vids.length]; if (v) return v; }
+      return null;
+    }
     function play(n) {
       var v = vids[n];
       if (!v || calm.matches || !inView) return;
@@ -229,7 +233,7 @@ const lockIcon = "M5 7V5a3 3 0 0 1 6 0v2h.5A1.5 1.5 0 0 1 13 8.5v5a1.5 1.5 0 0 1
     }
     vids.forEach(function (v, n) {
       if (!v) return;
-      v.addEventListener("playing", function () { v.classList.add("is-live"); load(vids[(n + 1) % vids.length]); });
+      v.addEventListener("playing", function () { v.classList.add("is-live"); load(nextVideo(n)); });
       v.addEventListener("ended", function () { if (n === i && !held) show(i + 1); });
       v.addEventListener("error", function () { vids[n] = null; if (n === i) start(); });
     });
@@ -289,9 +293,9 @@ const lockIcon = "M5 7V5a3 3 0 0 1 6 0v2h.5A1.5 1.5 0 0 1 13 8.5v5a1.5 1.5 0 0 1
       if (document.hidden) { stop(); if (vids[i]) vids[i].pause(); }
       else if (inView) { play(i); start(); }
     });
-    if (document.readyState === "complete") load(vids[1]);
-    else addEventListener("load", function () { load(vids[1]); });
-    play(i);
+    // The first recording waits for the page to finish loading, so it never competes with the hero's own image.
+    if (document.readyState === "complete") play(i);
+    else addEventListener("load", function () { play(i); });
     start();
   })();
 </script>
