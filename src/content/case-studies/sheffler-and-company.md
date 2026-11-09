@@ -9,8 +9,8 @@ client:
 year: "2024 to now"
 work: "Custom software and website"
 metric:
-  value: "44 days"
-  label: "from yes to version one of the portal"
+  value: "Half the time"
+  label: "on a routine survey proposal: about 15 minutes, down from 20 to 30"
 cover: "../../assets/case-studies/sheffler-and-company/portal-leads-queue.webp"
 coverAlt: "The lead queue in the Sheffler & Company portal, shown with demo data."
 coverBg: "orange"
@@ -65,4 +65,10 @@ I brought a clickable prototype of the whole thing to their office in Sewickley 
 
 ## What changed
 
-The leads from their website now land in the portal, site research starts there, and a proposal can go from address to finished document without leaving it. Once the team started using it on real jobs, the requests started coming in: engineering proposals, jobs with many properties, drive time from the office, and a company-wide proposal number ledger. I still add to it most weeks.
+The leads from their website now land in the portal, site research starts there, and a proposal goes from address to finished document without leaving it.
+
+The surveying side moved in first, and the best numbers come from the person doing the work. Mike, their survey project manager, has put about 170 proposals through it since July. A routine survey proposal used to take him 20 to 30 minutes. Now it takes about 15, which he says leaves room for three to five more proposals a day. And he says the tracker is much better than the Excel sheet they used before.
+
+Across the company, as of November 2026: 154 proposals finished in the portal, 285 property research reports, and 30 website leads that landed in their pipeline without anyone retyping them.
+
+Once the team started using it on real jobs, the requests started coming in: engineering proposals, jobs with many properties, drive time from the office, and a company-wide proposal number ledger. I still add to it most weeks.

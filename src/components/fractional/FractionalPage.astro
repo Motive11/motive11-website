@@ -344,12 +344,14 @@ const schema = [
         </div>
         {showShefflerStats && (
           <div class="stats reveal">
-            <!-- Lower bounds on purpose (portal figures as of October 23, 2026: 106 proposals, 27 web
-                 leads), so the line stays true as the counts keep climbing. Re-check before raising. -->
+            <!-- Lower bounds on purpose (portal figures as of November 9, 2026: 154 finished proposals),
+                 so the line stays true as the counts keep climbing. Re-check before raising. "Half" is
+                 the survey PM's own numbers in writing, November 9, 2026: 20 to 30 minutes before,
+                 about 15 now, on routine survey proposals only (bigger custom scopes are unchanged). -->
             <div class="stat-grid">
               {[
-                ["100+", "proposals written in their own software"],
-                ["25+", "website leads straight into their pipeline, none retyped"],
+                ["150+", "proposals written in their own software"],
+                ["Half", "the time on a routine survey proposal"],
                 ["44", "days from yes to their system going live"],
               ].map(([n, label]) => (
                 <div>

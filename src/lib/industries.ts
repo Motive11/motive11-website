@@ -60,7 +60,7 @@ export const industries: Industry[] = [
     midQuoteId: "a85e6793-5b63-4dc5-99d5-f6c18eadd6d6",
     industryFaq: {
       q: "Have you worked with engineering firms?",
-      a: "Yes. Sheffler & Company, a civil engineering and surveying firm, writes its proposals in software I built from a decade of their past proposals, and the site research that used to take half a day takes seconds. The full story is on this page. Every firm prices and scopes its work differently, which is why kickoff starts with how yours does it.",
+      a: "Yes. Sheffler & Company, a civil engineering and surveying firm, writes its proposals in software I built from 1,568 of their own past proposals, and a routine survey proposal now takes about half the time it used to. The full story is on this page. Every firm prices and scopes its work differently, which is why kickoff starts with how yours does it.",
     },
     formTag: "Engineering firms page",
   },
