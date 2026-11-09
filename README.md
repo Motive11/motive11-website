@@ -43,7 +43,9 @@ leads with the Sheffler portal, a 10-second click-through from the dashboard to 
 map, and the drafted proposal. Then come 7 seconds of each video hero: Valiant 3, Quality Choice Landscaping,
 and Bus Stops Here. Each slide shows its still (the video's first frame, `src/assets/showcase/<slug>.webp`) until
 the video starts, and the next slide fades in 1.3 seconds before a video ends, so nothing sits frozen. Only
-the video on screen and the next one download (1.1 to 1.7 MB each). Nothing plays while the hero is off screen
+the video on screen and the next one download (1.1 to 1.7 MB each). Below 1024px the page loads each video's
+1280x800 `-m.mp4` copy instead (0.5 to 1.4 MB, H.264 level 4.1/4.2): on November 9, 2026 Mark's phone lagged
+on the 1920x1200 level 5.0 files. Every upload therefore ships as a pair, and both scripts make the pair. Nothing plays while the hero is off screen
 or the tab is hidden, and visitors with reduced motion or Data Saver get the stills.
 
 **The portal video comes from the local demo copy, never Sheffler's live portal.** `projects/motive11/portal-demo`

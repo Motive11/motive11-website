@@ -2,7 +2,8 @@
 its own background video plays. No scrolling: a captured scroll judders (the screencast delivers frames
 unevenly), and Mark rejected it on November 9, 2026. Only sites whose hero moves are here; the rest stay
 stills in index.astro. Writes the still (src/assets/showcase/<slug>.webp, the
-recording's first frame) and uploads the silent MP4 to R2 as motive11-media/showcase/<slug>-v<N>.mp4,
+recording's first frame) and uploads the silent MP4 to R2 as motive11-media/showcase/<slug>-v<N>.mp4 plus its phone copy
+<slug>-v<N>-m.mp4,
 served at media.motive11.com. src/pages/index.astro points at those URLs.
 
 Runs with Playwright from the AIOS venv and the Cloudflare token in AIOS state/.env, so it only runs on
@@ -89,6 +90,15 @@ def encode(frames: Path, stamps: list[float], mp4: Path) -> None:
                     "-movflags", "+faststart", str(mp4)], check=True, cwd=frames)
 
 
+def phone_copy(mp4: Path, level: str = "4.1") -> Path:
+    """The "-m" copy index.astro serves below 1024px. Phones lagged on the 1920x1200 level 5.0 files."""
+    out = mp4.with_name(mp4.stem + "-m.mp4")
+    subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", str(mp4), "-vf", "scale=1280:800:flags=lanczos,format=yuv420p",
+                    "-c:v", "libx264", "-preset", "slow", "-crf", "24", "-profile:v", "high", "-level:v", level,
+                    "-maxrate", "1800k", "-bufsize", "3600k", "-an", "-movflags", "+faststart", str(out)], check=True)
+    return out
+
+
 def upload(mp4: Path, key: str) -> None:
     env = dict(os.environ)
     for line in (AIOS / "state" / ".env").read_text().splitlines():
@@ -141,9 +151,12 @@ def main() -> None:
                         "-quality", "88", str(still)], check=True)
         size = mp4.stat().st_size / 1e6
         if args.no_upload:
-            print(f"{slug}: {len(stamps)} frames, {size:.1f} MB, kept at {mp4}")
+            phone_copy(mp4)
+            print(f"{slug}: {len(stamps)} frames, {size:.1f} MB, kept at {mp4} (and its -m copy)")
             continue
+        small = phone_copy(mp4)
         upload(mp4, f"showcase/{mp4.name}")
+        upload(small, f"showcase/{small.name}")
         shutil.rmtree(work)
         print(f"{slug}: {len(stamps)} frames, {size:.1f} MB, https://media.motive11.com/showcase/{mp4.name} "
               f"({time.time() - t0:.0f}s)")

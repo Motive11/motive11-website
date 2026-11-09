@@ -1,5 +1,6 @@
 """Renders the portal slide from portal_capture.py's screens: a drawn cursor eases to each click at 60fps, so
-the motion is smooth by construction (a live screen capture judders). Writes <work dir>/portal.mp4.
+the motion is smooth by construction (a live screen capture judders). Writes <work dir>/portal.mp4 and the
+phone copy portal-m.mp4; upload them as portal-vN.mp4 and portal-vN-m.mp4.
 
     C:/Users/marks/AIOS/.venv/Scripts/python.exe scripts/showcase/portal_render.py <work dir>
 """
@@ -84,4 +85,8 @@ for f in range(n):
     frame.paste(cur, (int(x) - 2, int(y) - 2), cur)
     ff.stdin.write(frame.tobytes())
 ff.stdin.close(); ff.wait()
+# The phone copy index.astro serves below 1024px; 60fps at 1280x800 stays inside H.264 level 4.2.
+subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", str(D / "portal.mp4"), "-vf", "scale=1280:800:flags=lanczos,format=yuv420p",
+                "-c:v", "libx264", "-preset", "slow", "-crf", "24", "-profile:v", "high", "-level:v", "4.2", "-maxrate", "1800k",
+                "-bufsize", "3600k", "-an", "-movflags", "+faststart", str(D / "portal-m.mp4")], check=True)
 print(f"{total:.1f}s, {n} frames, {(D / 'portal.mp4').stat().st_size / 1e6:.2f} MB")

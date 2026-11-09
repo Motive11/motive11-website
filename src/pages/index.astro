@@ -212,7 +212,12 @@ const lockIcon = "M5 7V5a3 3 0 0 1 6 0v2h.5A1.5 1.5 0 0 1 13 8.5v5a1.5 1.5 0 0 1
 
     // Only the recording on screen and the next one ever download, so a visitor who never watches
     // past the first site pays for two recordings, not all of them.
-    function load(v) { if (v && !v.src && !calm.matches) { v.src = v.dataset.video; v.preload = "auto"; } }
+    // Narrow screens get the 1280x800 "-m" copy: the full 1920x1200 files are H.264 level 5.0, and phones lagged on them.
+    function load(v) {
+      if (!v || v.src || calm.matches) return;
+      v.src = swipe.matches ? v.dataset.video.replace(/\.mp4$/, "-m.mp4") : v.dataset.video;
+      v.preload = "auto";
+    }
     function nextVideo(n) {
       for (var k = 1; k < vids.length; k++) { var v = vids[(n + k) % vids.length]; if (v) return v; }
       return null;
