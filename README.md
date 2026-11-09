@@ -38,14 +38,23 @@ Dark mode is the default; the header toggle stores `light` or `dark` in `localSt
 
 ## Home page showcase
 
-The browser frame in the home hero cycles through client work (since November 9, 2026). Sites whose hero
-has its own background video (Valiant 3, Quality Choice Landscaping, Bus Stops Here) play a 7-second
-silent recording of just that hero, with no scrolling, and alternate with stills (the Sheffler portal, which
-is behind a login, and the Sheffler, Polverini & Wiater, and Valor sites, whose heroes don't move). A recording's
-still is its first frame (`src/assets/showcase/<slug>.webp`), so the video takes over without a jump, and a
-slide moves on when its recording ends; a still holds 4.5 seconds. Only the recording on screen and the next
-one download (1.1 to 1.7 MB each). Nothing plays while the hero is off screen or the tab is hidden, and
-visitors with reduced motion or Data Saver get the stills.
+The browser frame in the home hero is a carousel of four short silent videos (since November 9, 2026). It
+leads with the Sheffler portal, a 10-second click-through from the dashboard to a lead, its site research
+map, and the drafted proposal. Then come 7 seconds of each video hero: Valiant 3, Quality Choice Landscaping,
+and Bus Stops Here. Each slide shows its still (the video's first frame, `src/assets/showcase/<slug>.webp`) until
+the video starts, and the next slide fades in 1.3 seconds before a video ends, so nothing sits frozen. Only
+the video on screen and the next one download (1.1 to 1.7 MB each). Nothing plays while the hero is off screen
+or the tab is hidden, and visitors with reduced motion or Data Saver get the stills.
+
+**The portal video comes from the local demo copy, never Sheffler's live portal.** `projects/motive11/portal-demo`
+runs on `localhost:3002` against its own Supabase project, "Clayhorn Demo", with invented leads. The live
+portal is `sheffler-platform.vercel.app` / `portal.shefflerco.com`; the demo's own `CLAUDE.md` still lists those
+addresses, so check before trusting it. `scripts/showcase/portal_capture.py <work dir>` signs in as
+demo@clayhornsurvey.com (`DEMO_PORTAL_PASSWORD`; the password was reset November 9, 2026 and is not stored, so
+set a new one through the Supabase admin API on that project if needed). It shows Sheffler's logo in place
+of Clayhorn's (Mark's call: the logo only, every other word and record stays as the demo has it), adds a
+"Demo data" pill, and blocks every database write. `scripts/showcase/portal_render.py <work dir>` then draws
+the cursor and clicks at 60fps from those screenshots. Upload the result as a new `portal-vN.mp4`.
 
 **Never record a scroll.** The first version (November 9, 2026) also scrolled each home page and Mark
 rejected it: the capture delivers frames unevenly, so a recorded scroll judders and stalls no matter how it
@@ -56,7 +65,8 @@ and are cached as immutable. **Re-recording a site therefore always takes a new 
 `C:/Users/marks/AIOS/.venv/Scripts/python.exe scripts/showcase/record.py v3 --version 3` records it, rewrites
 its still, and uploads `showcase/v3-v3.mp4` (it refuses a version that is already published); then change
 that slide's `-vN` in `src/pages/index.astro` and commit the still with it. `--no-upload` keeps the MP4 and
-still in a temp folder to look at first. Re-record a site when its hero changes.
+still in a temp folder to look at first. Re-record a site when its hero changes. The portal video has its own
+scripts, above.
 
 ## Share images
 

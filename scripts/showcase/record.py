@@ -103,8 +103,9 @@ def upload(mp4: Path, key: str) -> None:
 
 def published(name: str) -> bool:
     try:
-        # Cloudflare answers Python's default User-Agent with 403.
-        urllib.request.urlopen(urllib.request.Request(f"https://media.motive11.com/showcase/{name}", method="HEAD",
+        # Cloudflare answers Python's default User-Agent with 403. The query string keeps this check out of the
+        # real URL's cache entry: the edge caches a 404, which then hides the file just uploaded.
+        urllib.request.urlopen(urllib.request.Request(f"https://media.motive11.com/showcase/{name}?check={time.time():.0f}", method="HEAD",
                                                       headers={"User-Agent": "Mozilla/5.0 motive11-showcase"}))
         return True
     except urllib.error.HTTPError as e:
