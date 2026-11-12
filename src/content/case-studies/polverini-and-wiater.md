@@ -47,11 +47,11 @@ I learned the business, scoped the site, and made every structural and strategic
 
 Along the way I cleaned up the tools the firm had collected over the years, consolidating what I could and removing the GoDaddy add-ons it no longer needed.
 
-In September 2026 I rebuilt the site myself, moved it off WordPress, and shut down the server it ran on. The design and the pages stayed the same, so there was nothing for the firm to relearn. Taking the site apart page by page also turned up problems from the original build, and I fixed them:
+In September 2026 I rebuilt the site myself, moved it off WordPress, and shut down the server it ran on. The design and the pages stayed the same, so there was nothing for the firm to relearn. I also used the move to set the site up right for search:
 
-- **The sitemap listed 3 pages while the site served 286**, so search engines were being told about almost none of it. The new sitemap lists every real page.
-- **No page had a description for search results.** Every page has one now, written from its own copy.
-- **232 FAQ and case result addresses were blank pages.** Each one now sends visitors to the page that actually carries that content, so nobody arriving from a search lands on an empty page.
+- **Every real page is listed in the sitemap**, so search engines know about all of it.
+- **Every page has its own description in search results**, written from its own copy.
+- **Every FAQ and case result address leads to the page that carries that content**, so someone arriving from a search always lands in the right place.
 
 The contact form moved too, with spam screening in front of it, so what reaches the firm comes from real people.
 
