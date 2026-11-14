@@ -4,15 +4,15 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
 <!-- Mark opens this once in each of his browsers as /me/?k=<his visitor_keys code> (AIOS
      state/VISITORS.md): Head.astro sends the ?k=, which ties the browser to him in the visitor ledger
-     and so hides it on Mission Control's Visitors tab. The button carries that same ID to
-     markszymanski.co with the cross-site handoff. Fathom's own skip runs too, only while Fathom is
+     and so hides it on Work HQ's Visitors tab. The button carries that same ID to hey.motive11.com/me
+     with the cross-site handoff, and that page's button carries it on to markszymanski.co/me. Fathom's own skip runs too, only while Fathom is
      still on the site. -->
 <BaseLayout title="This Browser - Motive11" description="This browser is marked as Mark's own." noindex>
   <section class="me">
     <div class="wrap">
       <h1>This browser is you now.</h1>
-      <p class="lead">Your visits from this browser won't show on the Visitors tab. One more tap does the same on markszymanski.co.</p>
-      <p class="next"><a class="btn" href="https://markszymanski.co/me/">Now markszymanski.co</a></p>
+      <p class="lead">Your visits from this browser won't show on the Visitors tab. Two more taps do the same on the outreach pages and markszymanski.co.</p>
+      <p class="next"><a class="btn" href="https://hey.motive11.com/me">Now hey.motive11.com</a></p>
     </div>
   </section>
 </BaseLayout>

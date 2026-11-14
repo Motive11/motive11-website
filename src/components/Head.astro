@@ -126,7 +126,9 @@ const jsonLd = graph(webPage(canonical, title, description), ...schema);
     // ID. The pass is asked for only after the page loads and only if it links there. It goes on the
     // link during the click itself and comes off right after, so a long-press "copy link" or a
     // shared URL never carries it. Same on both sites; change both together.
-    var SISTER = /^(www\.)?markszymanski\.co$/i, hand = "";
+    // hey.motive11.com (the outreach pages) is a sister too, only so /me can carry Mark's ID there; no
+    // other page here links to it, so no other page asks for a pass.
+    var SISTER = /^((www\.)?markszymanski\.co|hey\.motive11\.com)$/i, hand = "";
     function toSister(a) {
       try { return SISTER.test(new URL(a.href, location.href).hostname); } catch (e) { return false; }
     }
