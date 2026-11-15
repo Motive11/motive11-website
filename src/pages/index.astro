@@ -80,9 +80,9 @@ const lockIcon = "M5 7V5a3 3 0 0 1 6 0v2h.5A1.5 1.5 0 0 1 13 8.5v5a1.5 1.5 0 0 1
         </div>
         <div class="showcase-foot">
           <p class="caption"><span data-cap>{showcase[0].caption}</span>. <a href={showcase[0].href} data-caption-link>Read the Case Study</a></p>
-          <div class="dots" role="tablist" aria-label="Projects">
+          <div class="dots" role="group" aria-label="Projects">
             {showcase.map((s, i) => (
-              <button type="button" class:list={["dot", { "is-on": i === 0 }]} aria-label={s.addr} aria-selected={i === 0 ? "true" : "false"} data-dot={i}></button>
+              <button type="button" class:list={["dot", { "is-on": i === 0 }]} aria-label={s.addr} aria-current={i === 0 ? "true" : undefined} data-dot={i}></button>
             ))}
           </div>
         </div>
@@ -240,9 +240,9 @@ const lockIcon = "M5 7V5a3 3 0 0 1 6 0v2h.5A1.5 1.5 0 0 1 13 8.5v5a1.5 1.5 0 0 1
 
     function show(n, fromScroll) {
       var was = vids[i], left = i;
-      screens[i].classList.remove("is-on"); dots[i].classList.remove("is-on"); dots[i].setAttribute("aria-selected", "false");
+      screens[i].classList.remove("is-on"); dots[i].classList.remove("is-on"); dots[i].removeAttribute("aria-current");
       i = (n + screens.length) % screens.length;
-      screens[i].classList.add("is-on"); dots[i].classList.add("is-on"); dots[i].setAttribute("aria-selected", "true");
+      screens[i].classList.add("is-on"); dots[i].classList.add("is-on"); dots[i].setAttribute("aria-current", "true");
       addr.textContent = screens[i].dataset.addrText;
       cap.textContent = screens[i].dataset.caption;
       link.setAttribute("href", screens[i].dataset.href);
@@ -336,9 +336,11 @@ const lockIcon = "M5 7V5a3 3 0 0 1 6 0v2h.5A1.5 1.5 0 0 1 13 8.5v5a1.5 1.5 0 0 1
   .screen video.is-live { opacity: 1; }
   .showcase-foot { position: relative; display: grid; justify-items: center; gap: 14px; margin-top: 22px; }
   .showcase-foot .caption { margin: 0; min-height: 3em; }
-  .dots { display: flex; gap: 8px; }
-  .dot { width: 8px; height: 8px; padding: 0; border-radius: 999px; border: 0; background: var(--faint); cursor: pointer; transition: width 0.3s ease, background 0.3s ease; }
-  .dot.is-on { width: 24px; background: var(--orange); }
+  .dots { display: flex; gap: 16px; }
+  /* The padding is the tap target (24px, the accessibility minimum) and the negative margin takes it
+     back out of the layout, so only the 8px dot shows and the row keeps its size. */
+  .dots .dot { box-sizing: content-box; width: 8px; height: 8px; padding: 8px; margin: -8px; border-radius: 999px; border: 0; background-color: var(--faint); background-clip: content-box; cursor: pointer; transition: width 0.3s ease, background 0.3s ease; }
+  .dots .dot.is-on { width: 24px; background-color: var(--orange); }
   .caption { position: relative; margin: 22px auto 0; max-width: 40em; color: var(--muted); font-size: 15px; }
   .caption a { color: var(--fg); text-decoration: none; font-weight: 500; border-bottom: 1px solid rgba(255, 106, 26, 0.6); }
   .caption a:hover { color: var(--accent-text); }
