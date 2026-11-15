@@ -36,7 +36,7 @@ export type Industry = {
 export const industries: Industry[] = [
   {
     slug: "engineering-firms",
-    metaTitle: "Fractional AI and Systems Lead: Engineering and Surveying Firms - Motive11",
+    metaTitle: "Fractional AI & Systems Lead: Engineering and Surveying Firms - Motive11",
     metaDescription:
       "For engineering and surveying firms: one person to run your proposals, your website, and your systems, without the full-time hire.",
     eyebrow: "For engineering and surveying firms",
@@ -66,7 +66,7 @@ export const industries: Industry[] = [
   },
   {
     slug: "law-firms",
-    metaTitle: "Fractional AI and Systems Lead: Law Firms - Motive11",
+    metaTitle: "Fractional AI & Systems Lead: Law Firms - Motive11",
     metaDescription:
       "For law firms: one person to run your intake, your website, and your systems, without the full-time hire.",
     eyebrow: "For law firms",
@@ -95,7 +95,7 @@ export const industries: Industry[] = [
   },
   {
     slug: "home-services",
-    metaTitle: "Fractional AI and Systems Lead: Contractors and Home Service Companies - Motive11",
+    metaTitle: "Fractional AI & Systems Lead: Contractors and Home Service Companies - Motive11",
     metaDescription:
       "For contractors and home service companies: one person to run your website, your leads, and your office systems, without the full-time hire.",
     eyebrow: "For contractors and home service companies",

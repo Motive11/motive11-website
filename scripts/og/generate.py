@@ -82,7 +82,7 @@ def card(p: dict) -> dict | None:
     # The tag already says what kind of page it is, so the title keeps only the name.
     title = re.sub(r"\s+Case Study$", "", title)
     if tag == "Fractional":
-        title = re.sub(r"^Fractional AI and Systems Lead:\s*", "", title)
+        title = re.sub(r"^Fractional AI & Systems Lead:\s*", "", title)
     line = first_sentence(re.sub(r"\s*[\u2014\u2013]\s*", ", ", p["desc"]))
     return {"path": path, "tag": o.get("tag", tag), "title": o.get("title", title), "line": o.get("line", line),
             "home": o.get("home", False), "site": o.get("site")}

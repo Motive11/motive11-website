@@ -18,7 +18,7 @@ export interface Offer {
 export const offers: Offer[] = [
   {
     id: "fractional",
-    name: "Fractional AI and Systems Lead",
+    name: "Fractional AI & Systems Lead",
     short: "I run your website, your systems, and your AI, and every month I work on more revenue or a more organized team.",
     price: `${usd(p.monthly)}/month`,
     priceNote: p.earlySpotsLeft > 0

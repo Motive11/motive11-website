@@ -7,7 +7,7 @@ import { breadcrumb } from "../lib/schema";
 import { site } from "../lib/site";
 
 const title = "Services - Motive11";
-const description = "Fractional AI and Systems Lead and the AI Onboarding Day: what each one is, who it's for, what it costs, and how it starts.";
+const description = "Fractional AI & Systems Lead and the AI Onboarding Day: what each one is, who it's for, what it costs, and how it starts.";
 const schema = [
   breadcrumb([{ name: "Home", url: site.url }, { name: "Services", url: `${site.url}/services` }]),
   ...offers.map((o) => ({ "@type": "Service", name: o.name, description: o.short, provider: { "@id": `${site.url}/#organization` } })),

@@ -1,6 +1,6 @@
 ---
 /**
- * The Fractional AI and Systems Lead page, /fractional and its industry versions /fractional/<slug>. A copy of
+ * The Fractional AI & Systems Lead page, /fractional and its industry versions /fractional/<slug>. A copy of
  * markszymanski.co's /work-with-me (that repo's src/components/WorkWithMe.astro) in Motive11's look,
  * made November 6, 2026 at Mark's request: same sections, order, copy, video, and pricing logic.
  * Prices come from src/lib/pricing.ts, industry wording from src/lib/industries.ts.
@@ -251,7 +251,7 @@ const path = industry ? `/fractional/${industry.slug}` : "/fractional";
 const schema = [
   breadcrumb([
     { name: "Home", url: site.url },
-    { name: "Fractional AI and Systems Lead", url: `${site.url}/fractional` },
+    { name: "Fractional AI & Systems Lead", url: `${site.url}/fractional` },
     ...(industry ? [{ name: industry.eyebrow, url: `${site.url}${path}` }] : []),
   ]),
   { "@type": "FAQPage", mainEntity: faqs.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })) },
@@ -259,14 +259,14 @@ const schema = [
 ---
 
 <BaseLayout
-  title={industry?.metaTitle ?? "Fractional AI and Systems Lead - Motive11"}
+  title={industry?.metaTitle ?? "Fractional AI & Systems Lead - Motive11"}
   description={industry?.metaDescription ?? "The AI and systems person your business is missing, without the full-time hire. I run your website and systems, and every month I work on more revenue or less busywork for your team."}
   schema={schema}
 >
   <section class="hero">
     <div class="wrap">
       <div class="col">
-        <span class="label">{industry?.eyebrow ?? "Fractional AI and Systems Lead"}</span>
+        <span class="label">{industry?.eyebrow ?? "Fractional AI & Systems Lead"}</span>
         <!-- The emphasis is a weight step plus the orange underline, not a color: dimming the setup
              failed contrast in light mode on markszymanski.co. -->
         <h1>{industry?.h1Setup ?? "The AI and systems person your business is missing,"} <span class="payoff">without the full-time hire.</span></h1>
@@ -277,7 +277,7 @@ const schema = [
         <figure class="stage" data-stage data-play-src={videoPlaySrc}>
           <iframe
             src={videoPreviewSrc}
-            title="Fractional AI and Systems Lead"
+            title="Fractional AI & Systems Lead"
             loading="eager"
             allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
             allowfullscreen
