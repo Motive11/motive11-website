@@ -1,62 +1,164 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import ClientLogos from "../components/ClientLogos.astro";
 import { breadcrumb } from "../lib/schema";
 import { site } from "../lib/site";
 
 const title = "How I Work - Motive11";
 const description = "How I work with a business: start with how it actually runs, show you a working prototype before anything gets built, let AI do the building, and stay on after it's live.";
+
+const steps = [
+  {
+    title: "I start with the business, not the technology.",
+    body: "Most owners come to me asking for one thing: a new website, a client portal, a way to stop retyping the same information into three places. What they actually need is usually bigger, and they can't name it yet. So I ask how the business runs, who does what, and which job is costing the most. Then I tell you what I'd fix first and why.",
+  },
+  {
+    title: "You see it before you commit to it.",
+    body: "For custom software, you click through a working prototype before anything gets built. You're never paying for something you've only seen described in a proposal.",
+  },
+  {
+    title: "I build it, with AI doing the heavy lifting.",
+    body: "AI writes the software, so one person can build what used to take a team, and it goes faster than it ever has. I make every call along the way. I'll often end up building more than you asked for, because the thing you asked for only works if a few other things are true too.",
+  },
+  {
+    title: "I stay on after it's live.",
+    body: "Launch isn't the end of the work. Several of my clients have been with me for years, and it usually grows from one project into the system the whole office runs on.",
+  },
+];
+
+const why = [
+  {
+    title: "You're paying for judgment.",
+    body: "AI can't tell which job in your office is costing you the most, whether a feature will fight how your team actually works, or when to skip the custom build and use something that already exists. That comes from years of building systems for businesses and paying attention to what works.",
+  },
+  {
+    title: "Speed is a side effect.",
+    body: "Things move fast now, but that's not what I want you to remember. Speed is what happens when someone who knows what to build uses AI to build it. Without the judgment, you just get to the wrong answer faster.",
+  },
+  {
+    title: "I run my own business this way.",
+    body: "My clients, my money, my content, and the context behind all of it live in one system my AI can read and act on. I call it my AIOS. It's what I build toward for clients too, instead of a pile of tools that don't talk to each other.",
+  },
+];
+
+const wont = [
+  "Build something you asked for that I don't think will work.",
+  "Take on a business I don't think I can actually help.",
+  "Hide behind jargon. If I can't explain a decision in plain language, it's the wrong decision.",
+  "Disappear after launch.",
+];
 ---
 
 <BaseLayout title={title} description={description} schema={[breadcrumb([{ name: "Home", url: site.url }, { name: "How I Work", url: `${site.url}/how-i-work` }])]}>
-  <section class="hiw">
-    <div class="wrap">
+  <section class="hero">
+    <div class="wrap center">
       <span class="label">How I work</span>
       <h1>You're hiring my judgment. AI does the building.</h1>
-      <div class="prose-m11">
-        <p class="lead">This is how I work with a business, from the first call to years after launch.</p>
+      <p class="lead">This is how I work with a business, from the first call to years after launch.</p>
+    </div>
+  </section>
 
-        <h2>I start with the business, not the technology.</h2>
-        <p>Most owners come to me asking for one thing: a new website, a client portal, a way to stop retyping the same information into three places. What they actually need is usually bigger than that, and they can't name it yet. They just know something is off.</p>
-        <p>So I ask how the business runs. Who does what, where the time goes, and which job is costing the most. Then I tell you what I'd fix first and why. I'll often end up building more than you asked for, because the thing you asked for only works if a few other things are true too.</p>
+  <section class="block tint">
+    <div class="wrap reveal">
+      <div class="narrow">
+        <h2 class="center">How it goes.</h2>
+        <div class="steps">
+          {steps.map((step, i) => (
+            <div class="step">
+              <span class="n">0{i + 1}</span>
+              <h3>{step.title}</h3>
+              <p>{step.body}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
 
-        <h2>You see it before you commit to it.</h2>
-        <p>For custom software, you click through a working prototype before anything gets built. You're never paying for something you've only seen described in a proposal.</p>
+  <section class="block">
+    <div class="wrap reveal">
+      <h2 class="center">Why it works this way.</h2>
+      <div class="cards">
+        {why.map((item) => (
+          <div class="card">
+            <h3>{item.title}</h3>
+            <p>{item.body}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
 
-        <h2>AI does the building. My expertise is what you're paying for.</h2>
-        <p>AI writes the software now. That's real, and it's why one person can do what used to take a team. But AI doesn't know which job in your office is costing you the most, whether a new feature will fight how your team actually works, or when to skip the custom build and use something that already exists.</p>
-        <p>That comes from years of building systems for businesses, watching what works and what doesn't, and paying attention. It's pattern recognition, applied to your specific situation. When you hire me, that's what you're hiring, and the build is how it shows up.</p>
-
-        <h2>Speed is a side effect.</h2>
-        <p>Things move fast now, but that's not what I want you to remember. Speed is what happens when someone who knows what to build uses AI to build it. Without the judgment, you just get to the wrong answer faster.</p>
-
-        <h2>I run my own business this way.</h2>
-        <p>Everything I do runs through one system I built for myself: my clients, my money, my content, and the context behind all of it, in one place my AI can read and act on. I call it my AIOS. It's what I build toward for clients too, one system that actually knows your business instead of a pile of tools that don't talk to each other.</p>
-
-        <h2>I stay on after it's live.</h2>
-        <p>Launch isn't the end of the work. Several of my clients have been with me for years, and it usually grows from one project into the system the whole office runs on.</p>
-
-        <h2>What I won't do.</h2>
-        <ul>
-          <li>Build something you asked for that I don't think will work.</li>
-          <li>Take on a business I don't think I can actually help.</li>
-          <li>Hide behind jargon. If I can't explain a decision in plain language, it's the wrong decision.</li>
-          <li>Disappear after launch.</li>
+  <section class="block tint">
+    <div class="wrap reveal">
+      <div class="narrow">
+        <h2 class="center">What I won't do.</h2>
+        <ul class="crosses">
+          {wont.map((item) => <li>{item}</li>)}
         </ul>
       </div>
+    </div>
+  </section>
 
+  <div class="wrap logos"><ClientLogos /></div>
+
+  <section class="close">
+    <div class="wrap center inner">
+      <span class="label">Start here</span>
+      <h2>If this is how you'd want it done, let's talk.</h2>
       <div class="actions">
         <a class="btn" href="/fractional">Work With Me <svg class="arrow"><use href="#arrow" /></svg></a>
-        <a class="btn ghost" href="/case-studies">Read case studies</a>
+        <a class="btn ghost" href="/case-studies">Read Case Studies</a>
       </div>
     </div>
   </section>
 </BaseLayout>
 
 <style>
-  .hiw { padding-block: clamp(56px, 8vw, 104px) clamp(88px, 10vw, 128px); }
-  .wrap > * { max-width: 44rem; }
-  h1 { font-size: clamp(36px, 4.4vw, 58px); max-width: 14em; margin-bottom: 32px; }
-  .lead { font-size: 21px; color: var(--fg); }
-  .actions { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 56px; }
-  @media (max-width: 560px) { .lead { font-size: 19px; } }
+  .center { text-align: center; }
+  .center h1, .center h2, h2.center { margin-inline: auto; }
+  .narrow { max-width: 760px; margin-inline: auto; }
+
+  .hero { padding-block: clamp(64px, 9vw, 120px) clamp(64px, 8vw, 104px); }
+  .hero h1 { font-size: clamp(38px, 5vw, 64px); max-width: 13em; }
+  .lead { color: var(--muted); font-size: 20px; max-width: 30em; margin: 26px auto 0; text-wrap: pretty; }
+
+  .tint { background: var(--surface); border-block: 1px solid var(--line); }
+  h2 { max-width: 18em; }
+
+  .steps { margin-top: 44px; border-top: 1px solid var(--line); }
+  .step { display: grid; grid-template-columns: 52px 1fr; gap: 6px 10px; padding-block: 28px; border-bottom: 1px solid var(--line); }
+  .step .n { color: var(--accent-text); font-weight: 500; font-size: 22px; line-height: 1.25; }
+  .step h3 { font-weight: 500; font-size: 22px; letter-spacing: -0.025em; line-height: 1.3; }
+  .step p { grid-column: 2; color: var(--muted); line-height: 1.65; }
+
+  .cards { display: grid; gap: 16px; margin-top: 44px; }
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 30px; }
+  .card h3 { font-weight: 500; font-size: 23px; letter-spacing: -0.025em; line-height: 1.25; margin-bottom: 12px; }
+  .card p { color: var(--muted); font-size: 16px; line-height: 1.65; }
+
+  .crosses { list-style: none; padding: 0; margin: 40px 0 0; border-top: 1px solid var(--line); }
+  .crosses li { position: relative; padding: 18px 0 18px 34px; border-bottom: 1px solid var(--line); font-size: 18px; line-height: 1.55; }
+  .crosses li::before { content: "\00d7"; position: absolute; left: 2px; top: 13px; color: var(--accent-text); font-size: 26px; line-height: 1; }
+
+  .logos { padding-block: clamp(72px, 9vw, 112px) 0; }
+
+  .close { position: relative; overflow: hidden; padding-block: clamp(90px, 11vw, 140px) clamp(100px, 12vw, 150px); }
+  .close::before {
+    content: ""; position: absolute; left: 50%; bottom: -40%; width: 1100px; max-width: 160%; height: 90%; transform: translateX(-50%);
+    background: radial-gradient(ellipse 50% 50% at 50% 100%, var(--glow), transparent 70%);
+    opacity: 0.55; filter: blur(10px); pointer-events: none;
+  }
+  .inner { position: relative; }
+  .close h2 { font-size: clamp(34px, 4.4vw, 56px); max-width: 14em; }
+  .actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; margin-top: 36px; }
+
+  @media (min-width: 1024px) {
+    .cards { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
+  @media (max-width: 560px) {
+    .lead { font-size: 18px; }
+    .step { grid-template-columns: 40px 1fr; }
+    .crosses li { font-size: 17px; }
+  }
 </style>
