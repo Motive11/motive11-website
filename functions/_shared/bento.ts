@@ -42,26 +42,49 @@ async function postTags(env: BentoEnv, email: string, tags: string[]): Promise<v
   if (!res.ok) console.error("Bento tag error:", res.status, await res.text());
 }
 
-async function hasTag(env: BentoEnv, email: string, tag: string): Promise<boolean> {
+// Bento's "subscribe" command is the only write that brings back someone who unsubscribed: tags
+// alone leave them unsubscribed (tested October 17, 2026). Unlike the commands queue's add_tag, it
+// does apply (tested November 17, 2026).
+async function postSubscribe(env: BentoEnv, email: string): Promise<void> {
+  const res = await bentoFetch(env, "/fetch/commands", {
+    method: "POST",
+    body: JSON.stringify({ command: [{ command: "subscribe", email }] }),
+  });
+  if (!res.ok) console.error("Bento subscribe error:", res.status, await res.text());
+}
+
+async function readBack(env: BentoEnv, email: string, tag: string | undefined): Promise<{ tagged: boolean; subscribed: boolean } | null> {
   const [subRes, tagRes] = await Promise.all([
     bentoFetch(env, `/fetch/subscribers?email=${encodeURIComponent(email)}`),
     bentoFetch(env, "/fetch/tags"),
   ]);
-  if (!subRes.ok || !tagRes.ok) return false;
-  const sub = await subRes.json<{ data?: { attributes?: { cached_tag_ids?: (string | number)[] } } }>();
+  if (!subRes.ok || !tagRes.ok) return null;
+  const sub = await subRes.json<{ data?: { attributes?: { cached_tag_ids?: (string | number)[]; unsubscribed_at?: string | null } } }>();
   const all = await tagRes.json<{ data?: { id: string | number; attributes?: { name?: string } }[] }>();
-  const id = all.data?.find((t) => t.attributes?.name === tag)?.id;
-  return id != null && (sub.data?.attributes?.cached_tag_ids ?? []).map(String).includes(String(id));
+  const attrs = sub.data?.attributes;
+  if (!attrs) return null;
+  const id = tag ? all.data?.find((t) => t.attributes?.name === tag)?.id : undefined;
+  return {
+    tagged: !tag || (id != null && (attrs.cached_tag_ids ?? []).map(String).includes(String(id))),
+    subscribed: !attrs.unsubscribed_at,
+  };
 }
 
 /**
- * Subscribe (or update) someone in Bento: the optional event, then the tags, then confirm the
- * audience tag actually stuck and re-send it if not. Never throws.
+ * Subscribe someone in Bento: the optional event, then the tags, then the subscribe command, then
+ * read them back and re-send whatever did not stick. Never throws.
  *
- * The check exists because on October 14, 2026 Bento accepted one request carrying a magnet tag and
- * audience:builder, kept the magnet tag, and silently dropped the audience tag. It was 1 of about
- * 60 opt-ins that week, so it is intermittent on Bento's side, and its imports are queued, so the
- * HTTP answer cannot tell us whether the tags landed. Only reading the subscriber back can.
+ * Every call subscribes, including someone who unsubscribed before (Mark, November 17, 2026: a
+ * person who fills in a form that says they will be subscribed is subscribed, every time). So only
+ * call this from a form that says so, and from a checkbox form only when the box is ticked.
+ *
+ * No confirmation email. The old double opt-in was a Bento flow on the $newsletter event, paused
+ * November 17, 2026; resuming it would unsubscribe every new sign-up until they clicked a link.
+ *
+ * The read-back exists because on October 14, 2026 Bento accepted one request carrying a magnet tag
+ * and audience:builder, kept the magnet tag, and silently dropped the audience tag. It was 1 of
+ * about 60 opt-ins that week, so it is intermittent on Bento's side, and its imports are queued, so
+ * the HTTP answer cannot tell us whether the write landed. Only reading the subscriber back can.
  */
 export async function subscribeToBento(
   env: BentoEnv,
@@ -78,14 +101,21 @@ export async function subscribeToBento(
       if (!res.ok) console.error("Bento event error:", res.status, await res.text());
     }
     await postTags(env, email, tags);
+    await postSubscribe(env, email);
 
     const audience = tags.find((t) => (AUDIENCE_TAGS as readonly string[]).includes(t));
-    if (!audience) return;
     for (const wait of [8000, 10000]) {
       await sleep(wait);
-      if (await hasTag(env, email, audience)) return;
-      console.warn(`Bento: ${audience} missing for a new subscriber, re-sending`);
-      await postTags(env, email, tags);
+      const state = await readBack(env, email, audience);
+      if (state?.tagged && state.subscribed) return;
+      if (!state?.tagged) {
+        console.warn(`Bento: ${audience} missing for a new subscriber, re-sending`);
+        await postTags(env, email, tags);
+      }
+      if (!state?.subscribed) {
+        console.warn("Bento: still unsubscribed, re-sending subscribe");
+        await postSubscribe(env, email);
+      }
     }
   } catch (err) {
     console.error("Bento (non-fatal):", err);
