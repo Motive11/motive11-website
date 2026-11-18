@@ -5,35 +5,35 @@ import { breadcrumb } from "../lib/schema";
 import { site } from "../lib/site";
 
 const title = "How I Work - Motive11";
-const description = "How I work with a business: start with how it actually runs, show you a working prototype before anything gets built, let AI do the building, and stay on after it's live.";
+const description = "How I work with a business: learn how it runs, pick one number that proves it's working, ship one thing at a time your team actually uses, and keep it running.";
 
 const steps = [
   {
     title: "I start with the business, not the technology.",
-    body: "Most owners come to me asking for one thing: a new website, a client portal, a way to stop retyping the same information into three places. What they actually need is usually bigger, and they can't name it yet. So I ask how the business runs, who does what, and which job is costing the most. Then I tell you what I'd fix first and why.",
+    body: "Time with you first, then short conversations with the people who actually do the work: how work comes in, who does what, and where it gets stuck. Then I tell you what I'd fix first and why.",
   },
   {
-    title: "You see it before you commit to it.",
-    body: "For custom software, you click through a working prototype before anything gets built. You're never paying for something you've only seen described in a proposal.",
+    title: "We pick one number.",
+    body: "The number that proves this is working. I measure where it is today, and you see it every month after that, so you never have to guess whether it's paying off.",
   },
   {
-    title: "I build it, with AI doing the heavy lifting.",
-    body: "AI writes the software, so one person can build what used to take a team, and it goes faster than it ever has. I make every call along the way. I'll often end up building more than you asked for, because the thing you asked for only works if a few other things are true too.",
+    title: "One thing at a time, actually used.",
+    body: "I ship one thing, make sure it works, train your team on it, and check that they're using it. Then the next one. If something better shows up along the way, we swap it in.",
   },
   {
-    title: "I stay on after it's live.",
-    body: "Launch isn't the end of the work. Several of my clients have been with me for years, and it usually grows from one project into the system the whole office runs on.",
+    title: "It keeps running, and it's yours.",
+    body: "I keep everything I build running and fix it fast when something breaks. It lives in accounts you own, it's documented, and it stays if I ever leave.",
   },
 ];
 
 const why = [
   {
-    title: "You're paying for judgment.",
-    body: "AI can't tell which job in your office is costing you the most, whether a feature will fight how your team actually works, or when to skip the custom build and use something that already exists. That comes from years of building systems for businesses and paying attention to what works.",
+    title: "You're paying for the number, not hours.",
+    body: "I don't track hours, and you don't buy them. What you're paying for is the number moving, and every month you see whether it did.",
   },
   {
-    title: "Speed is a side effect.",
-    body: "Things move fast now, but that's not what I want you to remember. Speed is what happens when someone who knows what to build uses AI to build it. Without the judgment, you just get to the wrong answer faster.",
+    title: "Most of my clients stay.",
+    body: "Several have been with me for years. The work usually grows from one project into the system the whole office runs on.",
   },
   {
     title: "I run my own business this way.",
@@ -53,8 +53,8 @@ const wont = [
   <section class="hero">
     <div class="wrap center">
       <span class="label">How I work</span>
-      <h1>You're hiring my judgment. AI does the building.</h1>
-      <p class="lead">This is how I work with a business, from the first call to years after launch.</p>
+      <h1>I learn how your business runs. Then I build what moves it.</h1>
+      <p class="lead">From the first conversation to years after launch.</p>
     </div>
   </section>
 
@@ -75,7 +75,15 @@ const wont = [
     </div>
   </section>
 
-  <section class="block">
+  <section class="block amp">
+    <div class="wrap center reveal">
+      <span class="label">Where AI fits</span>
+      <h2>AI does most of the building. I do the orchestrating.</h2>
+      <p class="amp-body">That's how one person moves like a team. We'll move faster than you're probably used to, because someone who knows what to build has AI building it, and that speed comes to you as more shipped work.</p>
+    </div>
+  </section>
+
+  <section class="block tint">
     <div class="wrap reveal">
       <h2 class="center">Why it works this way.</h2>
       <div class="cards">
@@ -89,7 +97,7 @@ const wont = [
     </div>
   </section>
 
-  <section class="block tint">
+  <section class="block">
     <div class="wrap reveal">
       <div class="narrow">
         <h2 class="center">What I won't do.</h2>
@@ -124,6 +132,8 @@ const wont = [
   .lead { color: var(--muted); font-size: 20px; max-width: 30em; margin: 26px auto 0; text-wrap: pretty; }
 
   .tint { background: var(--surface); border-block: 1px solid var(--line); }
+  .amp h2 { font-size: clamp(30px, 3.6vw, 46px); max-width: 15em; }
+  .amp-body { color: var(--muted); font-size: 19px; line-height: 1.6; max-width: 34em; margin: 24px auto 0; text-wrap: pretty; }
   h2 { max-width: 18em; }
 
   .steps { margin-top: 44px; border-top: 1px solid var(--line); }
@@ -133,7 +143,7 @@ const wont = [
   .step p { grid-column: 2; color: var(--muted); line-height: 1.65; }
 
   .cards { display: grid; gap: 16px; margin-top: 44px; }
-  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 30px; }
+  .card { background: var(--bg); border: 1px solid var(--line); border-radius: 16px; padding: 30px; }
   .card h3 { font-weight: 500; font-size: 23px; letter-spacing: -0.025em; line-height: 1.25; margin-bottom: 12px; }
   .card p { color: var(--muted); font-size: 16px; line-height: 1.65; }
 
