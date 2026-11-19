@@ -230,6 +230,10 @@ const faqs = [
     a: "No. The price is the price, and it's on this page so you never have to find out on a call. Custom pricing exists for when you've outgrown the plan (a bigger team, a bigger build), not for making it smaller.",
   },
   {
+    q: `What if my company has more than ${p.teamSize} people?`,
+    a: `Then I quote it on the call. More people means more departments, more to build, and more people to train, so it's more work. Everything else stays the same: the kickoff, the number we go after, the guarantee, and the terms. The price on this page is for teams of up to ${p.teamSize}.`,
+  },
+  {
     q: "What if I need something bigger, like a client portal?",
     a: "Bigger builds are quoted on their own. Or, instead of paying for the build up front, you can extend your minimum to cover it.",
   },
@@ -572,7 +576,7 @@ const schema = [
         ) : (
           <p class="price">${p.monthly}<span>/month</span></p>
         )}
-        <p class="muted terms">Three-month minimum, then month to month with 30 days' notice. Every month is paid up front, starting at kickoff.</p>
+        <p class="muted terms">For teams of up to {p.teamSize} people. Larger teams are quoted on the call. Three-month minimum, then month to month with 30 days' notice. Every month is paid up front, starting at kickoff.</p>
         <div class="guarantee">
           <span class="label">My guarantee</span>
           <p class="g-main">If nothing I've built is in your team's hands within 30 days of kickoff, your second month is free.</p>

@@ -13,6 +13,8 @@ export const pricing = {
     earlyMonthly: "4,000",
     earlySpots: 2,
     totalSpots: 6,
+    // Past this many people the monthly is quoted on the call (Mark, November 19, 2026): more people is more to build and train.
+    teamSize: 50,
     // The $4,000 early rate was retired November 6, 2026 (Mark: flat $6,000). At 0 every early-rate line is hidden.
     earlySpotsLeft: 0,
   },
