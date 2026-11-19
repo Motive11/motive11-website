@@ -106,9 +106,10 @@ form the server refuses records `Form not accepted` instead and names nobody.
   and writes nothing.
 - Kept from markszymanski.co: nobody in Europe is stored or has device details read, machines are labeled
   not dropped, 4 KB bodies, hourly flood caps (its own `visitor_hourly` counter, `YYYY-MM-DDTHHm`), and the
-  180-day sweep of anonymous visitors. Not carried over: the server-side page count (`_middleware.ts`,
-  `page_hits`), because its daily tables have no site column and Motive11 rows would land in
-  markszymanski.co's numbers. Fathom counts this site's totals.
+  180-day sweep of anonymous visitors, and (since November 19, 2026) the server-side page count
+  (`_middleware.ts`, `_shared/page-count.ts`, `page_hits`), Europe counted anonymously by `/api/v`, every row
+  keyed `site = motive11.com`. `_middleware.ts` and `_shared/` are identical copies of markszymanski.co's;
+  change one, copy it to all (AIOS `state/VISITORS.md`, "Adding a domain to the ledger").
 - **The privacy and cookie policies must change in the same task whenever what the ledger records, how long
   it keeps it, or where it skips changes.** Since November 7, 2026 both are Termageddon embeds, so the edit is
   in Termageddon's Review and Override: the Privacy Policy's custom "Visit history" section and the Cookie

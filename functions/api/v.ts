@@ -13,10 +13,11 @@
  * inside it can be the same as markszymanski.co's: a click between the sites carries it over with
  * a one-time pass (../_shared/handoff.ts).
  *
- * Europe (and an unknown country) is never stored and its cookie is cleared (../_shared/no-track.ts).
- * Unlike markszymanski.co, a European page view is not turned into an anonymous page_hits count:
- * page_hits_daily and page_reads_daily have no site column, so a Motive11 count would land in
- * markszymanski.co's Visitors numbers. Fathom counts this site's totals, Europe included.
+ * Europe (and an unknown country) is never stored in the ledger and its cookie is cleared
+ * (../_shared/no-track.ts); a page view from there becomes an anonymous count in page_hits (page,
+ * country, referring site, minute, nothing else, keyed by this site), counted here rather than in
+ * _middleware.ts so only a browser that actually ran the page's script is counted. Same block as
+ * markszymanski.co's /api/v.
  *
  * Machines are kept and labeled in visitors.bot, never dropped (Mark, November 5, 2026: keep
  * everything, filter on read), so a wrong rule is fixed by reading differently. Each page view also
@@ -29,12 +30,14 @@
  * occasional sweep on the way out.
  */
 
-import { mayTrack } from "../_shared/no-track";
+import { mayTrack, countryOf } from "../_shared/no-track";
 import { HANDOFF_RE, mintHandoff, redeemHandoff } from "../_shared/handoff";
 import { machineLabel, deviceOf, browserOf, osOf } from "../_shared/ua";
+import { recordHit } from "../_shared/page-count";
 
 interface Env {
   DB?: D1Database;
+  ASSETS: Fetcher;
 }
 
 const COOKIE = "m11_vid";
@@ -90,6 +93,31 @@ async function sweep(db: D1Database) {
 export const onRequestPost: PagesFunction<Env> = async ({ request, env, waitUntil }) => {
   const track = mayTrack(request);
   if (track !== true) {
+    if (env.DB) {
+      try {
+        const text = await request.text();
+        const b = text.length <= BODY_MAX ? JSON.parse(text) : null;
+        const cf = (request as any).cf || {};
+        if (b && b.t === "view" && !machineLabel(request.headers.get("User-Agent") || "", cf.asn)) {
+          // The path comes from the POST body, so it is only counted when the site really serves
+          // it: otherwise anyone could invent paths and flood page_reads_daily with new rows.
+          // Only the cleaned-up pathname is kept, so "/?x=..." or "//x" cannot pass as "/".
+          const db = env.DB, here = new URL(request.url);
+          let u: URL | null = null;
+          try { u = new URL(clip(b.p, 200), here); } catch {}
+          waitUntil((async () => {
+            if (!u || u.origin !== here.origin) return;
+            const path = u.pathname;
+            const page = await env.ASSETS.fetch(new URL(path, here.origin), { method: "HEAD" });
+            if (page.status !== 200) return;
+            await recordHit(db, {
+              site: here.hostname.replace(/^www\./, ""), path, country: countryOf(request),
+              ref: clip(b.r, 100), src: clip(b.s, 60), kind: "browser", agent: null, anon: 1, asOrg: null, nav: 1, bump: true,
+            });
+          })().catch(() => {}));
+        }
+      } catch {}
+    }
     return track === false ? done(`${COOKIE}=; Path=/; Max-Age=0; Secure; HttpOnly; SameSite=Lax`) : done();
   }
   if (!env.DB) return done();

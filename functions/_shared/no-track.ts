@@ -1,14 +1,16 @@
 /**
  * Countries whose visitors the site never identifies or profiles: all of Europe. Read by /api/v
- * (the visitor ledger). The same list as markszymanski.co's functions/_shared/no-track.ts and the
- * mjs.link Worker (AIOS state/VISITORS.md), so Mark's properties can never disagree; change all
- * three together.
+ * (the visitor ledger), _middleware.ts (the page count), and /api/geo where a site has one, so they
+ * can never disagree. A page view from these countries is counted by /api/v with no cookie, no ID,
+ * and no device details, and nothing else. Identical on every site that runs the ledger and in the
+ * mjs.link Worker: change one, copy it to all.
  *
  * Why all of Europe and not just the EU, the EEA, and the UK, whose laws require a yes before
  * tracking: Mark's rule is "never Europe" (October 31, 2026, when he chose this over a consent
  * banner), and on November 5, 2026 he made it literal. Switzerland's regulator said in October
  * 2025 that profiling needs a real yes, Turkey's says the same, and the rest of non-EU Europe has
- * GDPR-style laws whose cookie rules nobody could pin down.
+ * GDPR-style laws whose cookie rules nobody could pin down. They sent 8 tracked browsers in the
+ * ledger's first five days, so skipping them costs nothing.
  */
 
 export const NO_TRACK = new Set([

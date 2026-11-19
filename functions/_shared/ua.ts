@@ -1,9 +1,10 @@
 /**
- * Reads a User-Agent and the Cloudflare network into the labels the visitor ledger stores (AIOS
- * state/VISITORS.md): browser and operating system for people, a crawler's name for machines that
- * say who they are, and a reason for machines that don't. A copy of markszymanski.co's
- * functions/_shared/ua.ts without the page-count groups, so both sites label a visitor the same
- * way in the one visitors table; change both together.
+ * Reads a User-Agent and the Cloudflare network into the labels the visitor ledger and the page
+ * count store (AIOS state/VISITORS.md): browser and operating system for people, a crawler's name
+ * for machines that say who they are, and a reason for machines that don't. Used by /api/v and
+ * _middleware.ts, so both label a visitor the same way. Identical on every site that runs the
+ * ledger (markszymanski.co, motive11.com, hey.motive11.com), all writing the one visitors table:
+ * change one, copy it to all. The mjs.link Worker keeps its own longer hosting list.
  */
 
 export const BOT_UA = /bot|crawl|spider|slurp|headless|lighthouse|preview|puppeteer|playwright|phantom|python-|curl|wget|google-safety/i;
@@ -27,6 +28,36 @@ const CRAWLERS: [RegExp, string][] = [
   [/facebookexternalhit|FacebookBot/i, "Facebook"], [/Twitterbot/i, "Twitterbot"], [/LinkedInBot/i, "LinkedInBot"],
   [/Slackbot/i, "Slackbot"], [/Discordbot/i, "Discordbot"], [/TelegramBot/i, "TelegramBot"], [/WhatsApp/i, "WhatsApp"],
 ];
+
+// What a named crawler is for, which is what Mark wants measured (November 5, 2026): an AI
+// fetching a page because a person just asked it something is a visitor by proxy, an AI crawler
+// decides whether AI knows the site later, a link preview means someone shared a link, and SEO
+// tools are noise. Third-party guides, not the vendors' own docs, are the source for which AI
+// agents fetch on a user's behalf.
+const GROUPS: Record<string, string> = {
+  "ChatGPT-User": "ai-agent", "Claude-User": "ai-agent", "Perplexity-User": "ai-agent",
+  "MistralAI-User": "ai-agent", "DuckAssistBot": "ai-agent",
+  GPTBot: "ai-crawler", "OAI-SearchBot": "ai-crawler", ClaudeBot: "ai-crawler", "Claude-SearchBot": "ai-crawler",
+  "anthropic-ai": "ai-crawler", PerplexityBot: "ai-crawler", "cohere-ai": "ai-crawler", Bytespider: "ai-crawler",
+  CCBot: "ai-crawler", "Meta-ExternalAgent": "ai-crawler", Amazonbot: "ai-crawler", YouBot: "ai-crawler", Diffbot: "ai-crawler",
+  Googlebot: "search", Bingbot: "search", DuckDuckBot: "search", YandexBot: "search", Baiduspider: "search",
+  PetalBot: "search", Applebot: "search",
+  Facebook: "preview", Twitterbot: "preview", LinkedInBot: "preview", Slackbot: "preview", Discordbot: "preview",
+  TelegramBot: "preview", WhatsApp: "preview",
+  AhrefsBot: "seo", SemrushBot: "seo", MJ12bot: "seo", DotBot: "seo",
+};
+
+/**
+ * The bucket a page_hits row is counted in: europe (a person in Europe, counted only), browser (a
+ * page load outside Europe, which the ledger counts as a person), unconfirmed (claims to be a
+ * browser but did not say it was loading a page), bot, or a crawler's group above.
+ */
+export function groupOf(kind: string, agent: string | null, nav: number, anon: number): string {
+  if (kind === "crawler") return GROUPS[agent || ""] || "ai-crawler";
+  if (kind === "bot") return "bot";
+  if (!nav) return "unconfirmed";
+  return anon ? "europe" : "browser";
+}
 
 export function crawlerName(ua: string): string | null {
   for (const [re, name] of CRAWLERS) if (re.test(ua)) return name;
