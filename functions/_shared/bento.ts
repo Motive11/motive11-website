@@ -1,5 +1,5 @@
-// A copy of markszymanski.co's functions/_shared/bento.ts (same Bento account, Szymanski Media's).
-// Fix a Bento quirk in both copies.
+// A copy of markszymanski.co's functions/_shared/bento.ts (same Bento account, Szymanski Media's),
+// plus currentAudience, which only this site uses. Fix a Bento quirk in both copies.
 //
 // Every subscriber carries exactly one audience: tag, builder or operator (Mark, October 5,
 // 2026). Bento enforces "one per person" with a unique tag limit on the audience group, so adding
@@ -68,6 +68,18 @@ async function readBack(env: BentoEnv, email: string, tag: string | undefined): 
     tagged: !tag || (id != null && (attrs.cached_tag_ids ?? []).map(String).includes(String(id))),
     subscribed: !attrs.unsubscribed_at,
   };
+}
+
+/** The audience tag the person already carries in Bento, or null (new, unreadable, or none). */
+export async function currentAudience(env: BentoEnv, email: string): Promise<string | null> {
+  try {
+    const res = await bentoFetch(env, `/fetch/subscribers?email=${encodeURIComponent(email)}`);
+    if (!res.ok) return null;
+    const sub = await res.json<{ data?: { attributes?: { tags?: string[] } } }>();
+    return (sub.data?.attributes?.tags ?? []).find((t) => (AUDIENCE_TAGS as readonly string[]).includes(t)) ?? null;
+  } catch {
+    return null;
+  }
 }
 
 /**

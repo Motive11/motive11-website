@@ -2,12 +2,13 @@
  * POST /api/newsletter: the operator newsletter signup (the /newsletter page and the footer form).
  * Verifies Turnstile (the motive11.com widget), then subscribes the person in Szymanski Media's
  * Bento with audience:operator, the tag the operator newsletter's segment is built on. It never
- * asks which audience: anyone signing up on motive11.com is an operator, and an existing builder
- * who signs up here moves to operator (Bento keeps one audience tag per person).
+ * asks which audience: a new sign-up here is an operator, but someone already tagged builder stays
+ * a builder, because Bento keeps one audience tag per person and nobody needs both newsletters
+ * (Mark, November 19, 2026, after a web designer from one of his talks signed up here).
  *
  * Needs TURNSTILE_SECRET_KEY and the three BENTO_* secrets on the Pages project.
  */
-import { subscribeToBento } from "../_shared/bento";
+import { currentAudience, subscribeToBento } from "../_shared/bento";
 
 interface Env {
   TURNSTILE_SECRET_KEY: string;
@@ -49,6 +50,9 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
   const fields: Record<string, string> = { signup_site: "motive11.com" };
   if (firstName) fields.first_name = firstName;
 
-  context.waitUntil(subscribeToBento(context.env, { email, event: "$newsletter", fields, tags: ["audience:operator"] }));
+  context.waitUntil((async () => {
+    const audience = (await currentAudience(context.env, email)) === "audience:builder" ? "audience:builder" : "audience:operator";
+    await subscribeToBento(context.env, { email, event: "$newsletter", fields, tags: [audience] });
+  })());
   return json({ success: true });
 };
