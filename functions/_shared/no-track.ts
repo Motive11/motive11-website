@@ -11,6 +11,10 @@
  * 2025 that profiling needs a real yes, Turkey's says the same, and the rest of non-EU Europe has
  * GDPR-style laws whose cookie rules nobody could pin down. They sent 8 tracked browsers in the
  * ledger's first five days, so skipping them costs nothing.
+ *
+ * Quebec too (November 20, 2026): its Law 25, section 8.1, says anything that can identify or
+ * profile a visitor must be off until they switch it on. Cloudflare's regionCode names the province,
+ * so the rest of Canada is unaffected. A Canadian visit with no province is treated as unknown.
  */
 
 export const NO_TRACK = new Set([
@@ -23,6 +27,10 @@ export const NO_TRACK = new Set([
   "GE", "AM", "AZ", "FO", "GL", "SJ",
 ]);
 
+/** Places inside a tracked country that are skipped like Europe, as COUNTRY-REGION. */
+export const NO_TRACK_REGIONS = new Set(["CA-QC"]);
+const REGION_COUNTRIES = new Set([...NO_TRACK_REGIONS].map((r) => r.split("-")[0]));
+
 /** The visitor's country code from Cloudflare, upper case, "" when Cloudflare has none. */
 export function countryOf(request: Request): string {
   return ((request as any).cf?.country || request.headers.get("CF-IPCountry") || "").toUpperCase();
@@ -31,5 +39,10 @@ export function countryOf(request: Request): string {
 /** true may track, false must not, null unknown (store nothing new, delete nothing). */
 export function mayTrack(request: Request): boolean | null {
   const country = countryOf(request);
-  return !country || country === "XX" || country === "T1" ? null : !NO_TRACK.has(country);
+  if (!country || country === "XX" || country === "T1") return null;
+  if (NO_TRACK.has(country)) return false;
+  if (!REGION_COUNTRIES.has(country)) return true;
+  const region = String((request as any).cf?.regionCode || "").toUpperCase();
+  if (!region) return null;
+  return !NO_TRACK_REGIONS.has(`${country}-${region}`);
 }

@@ -13,7 +13,7 @@
  * ID inside it can be the same as markszymanski.co's: a click between the sites, or a background
  * sync once a session, carries it over with a one-time pass (../_shared/handoff.ts).
  *
- * Europe (and an unknown country) is never stored in the ledger and its cookie is cleared
+ * Europe and Quebec (and an unknown country) are never stored in the ledger and its cookie is cleared
  * (../_shared/no-track.ts); a page view from there becomes an anonymous count in page_hits (page,
  * country, referring site, minute, nothing else, keyed by this site), counted here rather than in
  * _middleware.ts so only a browser that actually ran the page's script is counted. Same block as
@@ -75,7 +75,7 @@ function cookieVal(request: Request, name: string): string | null {
 }
 
 // X-Track tells the page this visitor is recorded, so the page only reads device details (screen,
-// language, time zone) for visitors outside Europe.
+// language, time zone) for visitors outside Europe and Quebec.
 // setCookie may carry several cookies, one per line.
 function done(setCookie?: string, tracked = false, hand?: string, cors?: Record<string, string> | null): Response {
   const headers = new Headers({ "Cache-Control": "no-store", ...(cors || {}) });

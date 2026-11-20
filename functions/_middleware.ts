@@ -19,7 +19,7 @@
  * _redirects still apply to the pages it passes through (Cloudflare's docs don't say either way).
  */
 
-import { NO_TRACK, countryOf } from "./_shared/no-track";
+import { mayTrack, countryOf } from "./_shared/no-track";
 import { machineLabel, browserOf } from "./_shared/ua";
 import { recordHit } from "./_shared/page-count";
 
@@ -32,7 +32,7 @@ async function count(db: D1Database, request: Request) {
   const cf = (request as any).cf || {};
   const ua = request.headers.get("User-Agent") || "";
   const country = countryOf(request);
-  const anon = !country || country === "XX" || country === "T1" || NO_TRACK.has(country) ? 1 : 0;
+  const anon = mayTrack(request) === true ? 0 : 1;
   const label = machineLabel(ua, cf.asn);
   const kind = !label ? "browser" : label.startsWith("crawler:") ? "crawler" : "bot";
   const nav = request.headers.get("Sec-Fetch-Dest") === "document" ? 1 : 0;

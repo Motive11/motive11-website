@@ -104,7 +104,7 @@ form the server refuses records `Form not accepted` instead and names nobody.
 - **Production needs a D1 binding: variable name `DB`, database `aios-state`, on the `motive11-website` Pages
   project's Production environment only.** Without it (previews, `wrangler pages dev`), `/api/v` answers 204
   and writes nothing.
-- Kept from markszymanski.co: nobody in Europe is stored or has device details read, machines are labeled
+- Kept from markszymanski.co: nobody in Europe or Quebec is stored or has device details read, machines are labeled
   not dropped, 4 KB bodies, hourly flood caps (its own `visitor_hourly` counter, `YYYY-MM-DDTHHm`), and the
   180-day sweep of anonymous visitors, and (since November 19, 2026) the server-side page count
   (`_middleware.ts`, `_shared/page-count.ts`, `page_hits`), Europe counted anonymously by `/api/v`, every row
