@@ -101,8 +101,17 @@ const jsonLd = graph(webPage(canonical, title, description), ...schema);
 <script is:inline>
   (function () {
     var live = location.hostname.replace(/^www\./, "") === "motive11.com";
+    // While a sync (below) is changing this browser's ID, everything else waits: an answer to a post
+    // sent with the old ID would set the old cookie back after the sync set the new one.
+    var hold = null;
+    function release() {
+      var q = hold;
+      hold = null;
+      if (q) q.forEach(function (x) { send(x[0], x[1]); });
+    }
     function send(body, then) {
       if (!live) return;
+      if (hold && body.t !== "sync") { hold.push([body, then]); return; }
       try {
         fetch("/api/v", {
           method: "POST",
@@ -121,7 +130,7 @@ const jsonLd = graph(webPage(canonical, title, description), ...schema);
     };
 
     var q = new URLSearchParams(location.search), ref = "";
-    // One visitor across both sites (AIOS state/VISITORS.md, "One visitor across both sites"): a
+    // One visitor across the sites (AIOS state/VISITORS.md, "One visitor across all the sites"): a
     // link to the other site carries a one-time pass (?vh=) the landing page trades for this same
     // ID. The pass is asked for only after the page loads and only if it links there. It goes on the
     // link during the click itself and comes off right after, so a long-press "copy link" or a
@@ -149,6 +158,32 @@ const jsonLd = graph(webPage(canonical, title, description), ...schema);
     }
     addEventListener("click", stamp, true);
     addEventListener("auxclick", stamp, true);
+    // No click needed where the browser allows it: once a session, ask the other site for a pass over
+    // the cookie it already holds for this browser and trade it here ("sync"), so someone who typed
+    // each address separately is still one person. Chrome and Edge send that cookie; Safari and
+    // Firefox don't, and nothing happens. motive11.com and hey.motive11.com share one cookie, so both
+    // ask markszymanski.co. Same on every site, with PEER pointing across; change them together.
+    var PEER = "https://markszymanski.co";
+    function syncPeer() {
+      try {
+        if (sessionStorage.getItem("ledger-sync")) return;
+        sessionStorage.setItem("ledger-sync", "1");
+      } catch (e) {}
+      hold = [];
+      setTimeout(release, 4000);
+      try {
+        fetch(PEER + "/api/v", {
+          method: "POST",
+          credentials: "include",
+          headers: { "Content-Type": "text/plain" },
+          body: JSON.stringify({ t: "handoff", p: "/" }),
+        }).then(function (r) {
+          var h = r.headers.get("X-Hand");
+          if (h) send({ t: "sync", vh: h, p: location.pathname }, release);
+          else release();
+        }).catch(release);
+      } catch (e) { release(); }
+    }
     try {
       ref = document.referrer ? new URL(document.referrer).hostname.replace(/^www\./, "") : "";
       if (ref === location.hostname.replace(/^www\./, "")) ref = "";
@@ -193,6 +228,7 @@ const jsonLd = graph(webPage(canonical, title, description), ...schema);
       if (tracked) {
         if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", askHand);
         else askHand();
+        syncPeer();
       }
       if (tracked && alive) engage();
     });
@@ -255,7 +291,7 @@ const jsonLd = graph(webPage(canonical, title, description), ...schema);
         var p = pending;
         var method = String((init && init.method) || (input && input.method) || "GET").toUpperCase();
         var url = new URL(typeof input === "string" ? input : (input && input.url) || String(input), location.href);
-        if (p && !p.claimed && method === "POST" && !(url.origin === location.origin && url.pathname === "/api/v")) {
+        if (p && !p.claimed && method === "POST" && url.pathname !== "/api/v") {
           p.claimed = true;
           clearTimeout(p.timer);
           res.then(function (r) { if (pending === p) settle(r.ok); }, function () { if (pending === p) settle(false); });

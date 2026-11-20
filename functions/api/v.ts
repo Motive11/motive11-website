@@ -7,11 +7,11 @@
  * site = motive11.com, through the DB binding, which only production has; with no binding every
  * request is answered and nothing is written.
  *
- * The visitor's random ID lives in a cookie this function sets (m11_vid, HttpOnly), not in
+ * The visitor's random ID lives in a cookie this function sets (m11v, HttpOnly), not in
  * localStorage, because Safari erases script-written storage after 7 days without a visit and a
- * buying journey runs for months. Its own name because it is a different domain anyway. The ID
- * inside it can be the same as markszymanski.co's: a click between the sites carries it over with
- * a one-time pass (../_shared/handoff.ts).
+ * buying journey runs for months. hey.motive11.com reads the same cookie (Domain=motive11.com). The
+ * ID inside it can be the same as markszymanski.co's: a click between the sites, or a background
+ * sync once a session, carries it over with a one-time pass (../_shared/handoff.ts).
  *
  * Europe (and an unknown country) is never stored in the ledger and its cookie is cleared
  * (../_shared/no-track.ts); a page view from there becomes an anonymous count in page_hits (page,
@@ -31,7 +31,7 @@
  */
 
 import { mayTrack, countryOf } from "../_shared/no-track";
-import { HANDOFF_RE, mintHandoff, redeemHandoff } from "../_shared/handoff";
+import { HANDOFF_RE, crossSite, foldVisitor, mintHandoff, redeemHandoff, sisterCors } from "../_shared/handoff";
 import { machineLabel, deviceOf, browserOf, osOf } from "../_shared/ua";
 import { recordHit } from "../_shared/page-count";
 
@@ -40,7 +40,11 @@ interface Env {
   ASSETS: Fetcher;
 }
 
-const COOKIE = "m11_vid";
+// One cookie for motive11.com and hey.motive11.com (Domain=motive11.com), so the two are one visitor
+// in every browser, Safari included (November 20, 2026). Each kept its own before (m11_vid here),
+// and a browser still carrying that one is moved over on its next request.
+const COOKIE = "m11v";
+const LEGACY = "m11_vid";
 const BODY_MAX = 4096;
 const HOURLY_CAP = 3000;
 const BOT_HOURLY_CAP = 1000;
@@ -65,18 +69,19 @@ function botTag(cf: any, device: string): string | null {
 
 const clip = (v: unknown, n: number) => String(v ?? "").slice(0, n);
 
-function cookieId(request: Request): string | null {
-  const m = (request.headers.get("Cookie") || "").match(/(?:^|;\s*)m11_vid=([0-9a-f-]{36})(?:;|$)/);
+function cookieVal(request: Request, name: string): string | null {
+  const m = (request.headers.get("Cookie") || "").match(new RegExp(`(?:^|;\\s*)${name}=([0-9a-f-]{36})(?:;|$)`));
   return m ? m[1] : null;
 }
 
 // X-Track tells the page this visitor is recorded, so the page only reads device details (screen,
 // language, time zone) for visitors outside Europe.
-function done(setCookie?: string, tracked = false, hand?: string): Response {
-  const headers: Record<string, string> = { "Cache-Control": "no-store" };
-  if (setCookie) headers["Set-Cookie"] = setCookie;
-  if (tracked) headers["X-Track"] = "1";
-  if (hand) headers["X-Hand"] = hand;
+// setCookie may carry several cookies, one per line.
+function done(setCookie?: string, tracked = false, hand?: string, cors?: Record<string, string> | null): Response {
+  const headers = new Headers({ "Cache-Control": "no-store", ...(cors || {}) });
+  for (const c of (setCookie || "").split("\n")) if (c) headers.append("Set-Cookie", c);
+  if (tracked) headers.set("X-Track", "1");
+  if (hand) headers.set("X-Hand", hand);
   return new Response(null, { status: 204, headers });
 }
 
@@ -118,7 +123,9 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env, waitUnti
         }
       } catch {}
     }
-    return track === false ? done(`${COOKIE}=; Path=/; Max-Age=0; Secure; HttpOnly; SameSite=Lax`) : done();
+    return track === false
+      ? done(`${COOKIE}=; Domain=motive11.com; Path=/; Max-Age=0; Secure; HttpOnly; SameSite=None\n${LEGACY}=; Path=/; Max-Age=0; Secure; HttpOnly; SameSite=Lax`)
+      : done();
   }
   if (!env.DB) return done();
 
@@ -138,14 +145,26 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env, waitUnti
   // Mission Control matches "MBS joined" to a Stripe purchase from any site, and it can only happen on
   // markszymanski.co, so a POST of it here could only be someone borrowing a real buyer's identity.
   if (!TYPE_RE.test(type) || type === "MBS joined") return done();
+  // SameSite=None (below) lets the other sites' pages read a pass over this cookie, so it would also
+  // let any page in the world post here as this visitor (name them, invent events). A request from
+  // another origin may therefore only ask for a pass, and only from one of Mark's own sites.
+  const cors = sisterCors(request);
+  if (crossSite(request) && (!cors || type !== "handoff")) return done();
 
-  const existing = cookieId(request);
-  // An engage update belongs to a page view already recorded, so it never starts a new visitor.
-  // An engage update or a handoff request belongs to a page view already recorded, so neither
-  // ever starts a new visitor.
-  if ((type === "engage" || type === "handoff") && !existing) return done();
+  const shared = cookieVal(request, COOKIE);
+  const legacy = cookieVal(request, LEGACY);
+  const existing = shared || legacy;
+  // An engage update, a handoff request, or a sync belongs to a page view already recorded, so none
+  // of them ever starts a new visitor.
+  if ((type === "engage" || type === "handoff" || type === "sync") && !existing) return done(undefined, false, undefined, cors);
   let id = existing || crypto.randomUUID();
-  const cookieFor = (v: string) => `${COOKIE}=${v}; Path=/; Max-Age=31536000; Secure; HttpOnly; SameSite=Lax`;
+  // The old cookie is cleared only once nothing is left to fold from it, so a request that stops
+  // early (the hourly cap, a failed write) keeps it and the next one tries again.
+  let legacyDone = !!legacy && (!shared || legacy === shared);
+  // SameSite=None so this cookie also reaches /api/v when another of Mark's sites asks for a pass.
+  const cookieFor = (v: string) =>
+    `${COOKIE}=${v}; Domain=motive11.com; Path=/; Max-Age=31536000; Secure; HttpOnly; SameSite=None` +
+    (legacyDone ? `\n${LEGACY}=; Path=/; Max-Age=0; Secure; HttpOnly; SameSite=Lax` : "");
   let setCookie = cookieFor(id);
 
   try {
@@ -166,13 +185,33 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env, waitUnti
       "INSERT INTO visitor_hourly (hour, n) VALUES (?, 1) ON CONFLICT(hour) DO UPDATE SET n = n + 1"
     ).bind(hour);
 
-    // A page that links to the other site asks for a pass once it has loaded, so a click there
-    // carries this ID over (../_shared/handoff.ts). Not an event: nothing is recorded but the pass.
+    // Both cookies on one request are the same browser, so the old one's history joins the shared one.
+    if (shared && legacy && legacy !== shared) {
+      const f = await foldVisitor(env.DB, legacy, shared);
+      if (f.stmts.length) await env.DB.batch(f.stmts);
+      legacyDone = true;
+      setCookie = cookieFor(id);
+    }
+
+    // A pass for this browser's ID (../_shared/handoff.ts): asked for by this site's own page when it
+    // links to another site, or by another site's page once a session. Not an event: nothing is
+    // recorded but the pass.
     if (type === "handoff") {
-      if (label) return done(setCookie, true);
+      if (label) return done(setCookie, true, undefined, cors);
       const m = await mintHandoff(env.DB, id, request);
       await env.DB.batch([counter, m.stmt]);
-      return done(setCookie, true, m.token);
+      return done(setCookie, true, m.token, cors);
+    }
+
+    // The page traded another site's pass in the background: this browser takes that site's ID.
+    if (type === "sync") {
+      const vh = clip(body.vh, 32);
+      if (label || !HANDOFF_RE.test(vh)) return done(setCookie, true);
+      const r = await redeemHandoff(env.DB, vh, existing, request);
+      if (!r) return done(setCookie, true);
+      if (r.id !== id) { id = r.id; setCookie = cookieFor(id); }
+      await env.DB.batch([counter, ...r.stmts]);
+      return done(setCookie, true);
     }
 
     let joins: D1PreparedStatement[] = [];
@@ -236,7 +275,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env, waitUnti
     }
     if (keyEmail) {
       stmts.push(env.DB.prepare(
-        "UPDATE visitors SET email = ?, identified_at = datetime('now'), identified_via = 'newsletter' WHERE id = ? AND email IS NULL"
+        "UPDATE visitors SET email = ?, identified_at = datetime('now'), identified_via = 'newsletter' WHERE id = ? AND (email IS NULL OR identified_via = 'device-match')"
       ).bind(keyEmail, id));
     }
     stmts.push(env.DB.prepare(
