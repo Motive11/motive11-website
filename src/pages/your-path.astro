@@ -1,116 +1,64 @@
 ---
-// Draft for Mark (November 20, 2026): a few questions that end on the one offer that fits. Lives on a
-// preview branch until he approves the questions and the routing; noindex until then. The HQ Day
-// outcome is a proposal, not an offer on sale (AIOS entities/motive11/context/offers/).
+// Draft for Mark (November 20, 2026), noindex and unlinked until he approves it. The revenue and team
+// options are copied from the Intro Call form (the motive11 `intro` booking type in AIOS) and the
+// routing is the intro-call cheat sheet (AIOS entities/motive11/context/process/intro-call.md), so a
+// change to either belongs there first.
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { pricing, usd } from "../lib/pricing";
 
 const day = usd(pricing.onboardingDay.rate);
 const monthly = usd(pricing.fractional.monthly);
+const teamCap = pricing.fractional.teamSize;
 
 const questions = [
   {
-    id: "rev",
-    q: "About how much does the business bring in a year?",
+    id: "revenue",
+    q: "Roughly what's your annual revenue?",
     options: [
-      ["lt1", "Under $1M"],
-      ["1to3", "$1M to $3M"],
+      ["lt3", "Under $3M"],
       ["3to10", "$3M to $10M"],
-      ["10plus", "$10M or more"],
+      ["10to50", "$10M to $50M"],
+      ["50plus", "$50M and up"],
     ],
   },
   {
     id: "team",
-    q: "How many people would use what I build?",
-    hint: "Count the people at a desk: the office, managers, sales. Not a field crew that never touches it.",
+    q: "How many people are on your team?",
     options: [
-      ["me", "Just me"],
-      ["small", "2 to 9"],
-      ["mid", "10 to 50"],
-      ["big", "More than 50"],
-    ],
-  },
-  {
-    id: "problem",
-    q: "What are you trying to fix?",
-    options: [
-      ["one", "One clear thing that eats our time"],
-      ["list", "A list that keeps growing"],
-      ["unsure", "Not sure yet. I just know we're behind."],
+      ["lt10", "Under 10"],
+      ["10to50", "10 to 50"],
+      ["51to100", "51 to 100"],
+      ["100plus", "More than 100"],
     ],
   },
   {
     id: "two",
-    q: "Two years from now, who runs it?",
+    q: "Two years from now, how do you see this?",
     options: [
-      ["team", "My own team"],
-      ["partner", "You, as our partner"],
-      ["setup", "Just set it up and I'll take it from there"],
-      ["unsure", "I haven't thought about it"],
-    ],
-  },
-  {
-    id: "ai",
-    q: "Is anyone using ChatGPT or Claude today?",
-    options: [
-      ["none", "Not really"],
-      ["some", "A few of us, here and there"],
-      ["daily", "Every day"],
+      ["partner", "You're still in it with us as a partner"],
+      ["team", "Our own team runs it"],
+      ["setup", "You set it up, and we take it from there"],
     ],
   },
 ];
-
-const results = {
-  fractional: {
-    label: "Your path",
-    title: "Fractional",
-    body: `You want a number to move and someone accountable for it every week. At kickoff I learn how the business runs, pick the one number we're going to move (more revenue, or more organized), and build whatever moves it next. ${monthly}/month, three-month minimum, then month to month.`,
-    cta: ["Book a 20-minute intro call", "/book/intro"],
-    more: ["How Fractional works", "/fractional"],
-  },
-  own: {
-    label: "Your path",
-    title: "Build it, own it",
-    body: `Start with the AI Onboarding Day (${day}). I learn how the business runs, write it down in one place you own, and get AI doing real work on it before I leave. Then an HQ Day: your own screen on top of it, built in your accounts and documented. After that you can stop and run it yourself, or keep me on.`,
-    draft: "HQ Day is a draft. It isn't on sale yet and has no price.",
-    cta: ["See the AI Onboarding Day", "/ai-onboarding-day"],
-    more: ["How Fractional works", "/fractional"],
-  },
-  day: {
-    label: "Your path",
-    title: "The AI Onboarding Day",
-    body: `One day, ${day}, paid once. I learn how the business runs, write it down in one place you own, and get AI doing real work on it before I leave. If you want ongoing help after that, Fractional is the next step.`,
-    cta: ["See the AI Onboarding Day", "/ai-onboarding-day"],
-    more: ["How Fractional works", "/fractional"],
-  },
-  free: {
-    label: "Your path",
-    title: "Start with the newsletter",
-    body: "Honestly, you don't need to pay me yet. Every Tuesday I write about what I'm building for businesses and what it changed for them. When the business is ready for more, you'll know what to ask for.",
-    cta: ["Get the newsletter", "/newsletter"],
-    more: ["See the work", "/case-studies"],
-  },
-};
 ---
 
 <BaseLayout
   title="Your Path - Motive11"
-  description="Five questions, and I'll tell you which way of working with me fits your business."
+  description="Three questions, and I'll tell you how I'd work with your business."
   noindex
 >
   <div class="draft-bar">Draft for Mark. Not linked anywhere, not indexed.</div>
   <section class="block path">
     <div class="wrap narrow">
       <span class="label">Find your path</span>
-      <h1>Five questions. Then I'll tell you how I'd work with you.</h1>
-      <p class="lead">No email needed. Whatever I build lives in your own accounts, so you own all of it, whichever path you land on.</p>
+      <h1>Three questions, and I'll tell you how I'd work with you.</h1>
 
       <div class="quiz" data-quiz>
         <div class="progress" aria-hidden="true"><i data-bar></i></div>
         {questions.map((qu, i) => (
           <fieldset class="step" data-step={i} hidden={i !== 0}>
             <legend><span class="num">{i + 1} of {questions.length}</span>{qu.q}</legend>
-            {qu.hint && <p class="hint">{qu.hint}</p>}
             <div class="opts">
               {qu.options.map(([v, text]) => (
                 <button type="button" class="opt" data-q={qu.id} data-v={v}>{text}</button>
@@ -120,21 +68,33 @@ const results = {
           </fieldset>
         ))}
 
-        {Object.entries(results).map(([key, r]) => (
-          <div class="result" data-result={key} hidden>
-            <span class="label">{r.label}</span>
-            <h2>{r.title}</h2>
-            <p class="body">{r.body}</p>
-            <ul class="why" data-why></ul>
-            {"draft" in r && <p class="draft-note">{r.draft}</p>}
-            <div class="actions">
-              <a class="btn" href={r.cta[1]}>{r.cta[0]} <svg class="arrow"><use href="#arrow" /></svg></a>
-              <a class="text-link" href={r.more[1]}>{r.more[0]} <svg class="arrow"><use href="#arrow" /></svg></a>
-            </div>
-            <p class="own">Whichever way you go, everything I build lives in your own accounts. You own all of it, and if you ever want to end it, I get out of your systems and you keep everything.</p>
-            <button type="button" class="back" data-restart>Start over</button>
+        <div class="result" data-result="day" hidden>
+          <span class="label">Your path</span>
+          <h2>The AI Onboarding Day</h2>
+          <p class="body">One day, {day}, paid once. I learn how your business runs, put it in one place you own, and leave AI doing real work on it.</p>
+          <p class="body" data-note="after">If you want me on it every month after that, that's Fractional.</p>
+          <div class="actions">
+            <a class="btn" href="/ai-onboarding-day">See the AI Onboarding Day <svg class="arrow"><use href="#arrow" /></svg></a>
+            <a class="text-link" href="/fractional">How Fractional works <svg class="arrow"><use href="#arrow" /></svg></a>
           </div>
-        ))}
+          <p class="own">Everything I build lives in your own accounts, so you own all of it.</p>
+          <button type="button" class="back" data-restart>Start over</button>
+        </div>
+
+        <div class="result" data-result="fractional" hidden>
+          <span class="label">Your path</span>
+          <h2>Fractional</h2>
+          <p class="body">I'm your AI and systems lead, every month. At kickoff I learn how the business runs and we pick the one number to move. Then I build whatever moves it.</p>
+          <p class="body" data-note="team">You want your own team running it in two years, so I plan the handoff from day one and train your people as we go.</p>
+          <p class="body price" data-price="std">{monthly}/month, three-month minimum, then month to month.</p>
+          <p class="body price" data-price="big">For a team over {teamCap}, I quote it on the call.</p>
+          <div class="actions">
+            <a class="btn" href="/book/intro">Book a 20-minute intro call <svg class="arrow"><use href="#arrow" /></svg></a>
+            <a class="text-link" href="/fractional">How Fractional works <svg class="arrow"><use href="#arrow" /></svg></a>
+          </div>
+          <p class="own">Everything I build lives in your own accounts, so you own all of it. If you ever want to end it, I get out of your systems and you keep everything.</p>
+          <button type="button" class="back" data-restart>Start over</button>
+        </div>
       </div>
     </div>
   </section>
@@ -143,42 +103,11 @@ const results = {
 <script>
   type A = Record<string, string>;
 
-  // The routing mirrors the intro call cheat sheet and icps.md: revenue says whether Fractional is
-  // possible at all, team size and the two-year answer say which way. Change it there first.
   function route(a: A): string {
-    if (a.rev === "lt1") return "free";
-    if (a.rev === "1to3") {
-      if (a.ai === "none") return "free";
-      if (a.problem === "one" && (a.two === "team" || a.two === "setup")) return "own";
-      return "day";
-    }
-    if (a.two === "setup") return "own";
-    if (a.team === "mid" || a.team === "big" || a.rev === "10plus") return "fractional";
-    return a.two === "partner" ? "day" : "own";
-  }
-
-  function why(a: A, result: string): string[] {
-    const out: string[] = [];
-    if (result === "fractional") {
-      if (a.problem === "list") out.push("You have a list, not one problem. That's what a partner is for.");
-      if (a.team === "mid" || a.team === "big") out.push("A real team will use it, so it has to keep changing as they do.");
-      if (a.two === "team") out.push("You want your own team running it in two years. Good: I plan the handoff from kickoff, and they're trained as we go.");
-      if (a.two === "partner") out.push("You want a partner, not a one-time setup.");
-    }
-    if (result === "own") {
-      if (a.two === "setup") out.push("You want it set up, then you'll take it from there.");
-      if (a.two === "team") out.push("You want your own team running it, so you should own it from day one.");
-      if (a.problem === "one") out.push("You have one clear thing to fix, so a fixed scope fits.");
-    }
-    if (result === "day") {
-      if (a.ai !== "none") out.push("You're already using AI and want it set up right.");
-      if (a.rev === "3to10") out.push("It's the way in. If you want ongoing help after, that's Fractional.");
-    }
-    if (result === "free") {
-      if (a.rev === "lt1") out.push("At your size, paying me isn't the best use of your money yet.");
-      else out.push("Nobody's using AI yet, so the first step is seeing what it can do, not paying someone to set it up.");
-    }
-    return out;
+    if (a.two === "setup") return "day";
+    if (a.revenue === "lt3") return "day";
+    if (a.revenue === "3to10" && a.team === "lt10") return "day";
+    return "fractional";
   }
 
   const quiz = document.querySelector<HTMLElement>("[data-quiz]")!;
@@ -192,7 +121,6 @@ const results = {
     steps.forEach((s, n) => (s.hidden = n !== i));
     quiz.querySelectorAll<HTMLElement>("[data-result]").forEach((r) => (r.hidden = true));
     bar.style.width = `${(i / steps.length) * 100}%`;
-    steps[i].querySelector<HTMLButtonElement>(".opt")?.focus({ preventScroll: true });
   }
 
   function finish() {
@@ -200,11 +128,12 @@ const results = {
     steps.forEach((s) => (s.hidden = true));
     bar.style.width = "100%";
     const box = quiz.querySelector<HTMLElement>(`[data-result="${key}"]`)!;
-    const list = box.querySelector<HTMLElement>("[data-why]")!;
-    list.replaceChildren(...why(answers, key).map((t) => Object.assign(document.createElement("li"), { textContent: t })));
-    list.hidden = !list.children.length;
+    const big = answers.team === "51to100" || answers.team === "100plus";
+    box.querySelectorAll<HTMLElement>("[data-note='team']").forEach((n) => (n.hidden = answers.two !== "team"));
+    box.querySelectorAll<HTMLElement>("[data-note='after']").forEach((n) => (n.hidden = answers.two === "setup"));
+    box.querySelectorAll<HTMLElement>("[data-price='std']").forEach((n) => (n.hidden = big));
+    box.querySelectorAll<HTMLElement>("[data-price='big']").forEach((n) => (n.hidden = !big));
     box.hidden = false;
-    box.querySelector<HTMLElement>("h2")?.focus?.();
   }
 
   quiz.addEventListener("click", (e) => {
@@ -234,7 +163,6 @@ const results = {
   fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
   legend { font-size: clamp(22px, 3vw, 28px); font-weight: 600; letter-spacing: -0.01em; line-height: 1.2; padding: 0; }
   .num { display: block; font-size: 14px; font-weight: 500; color: var(--faint); margin-bottom: 10px; letter-spacing: 0; }
-  .hint { color: var(--muted); margin: 10px 0 0; font-size: 16px; }
   .opts { display: grid; gap: 10px; margin-top: 22px; }
   .opt { text-align: left; font: inherit; font-size: 18px; color: var(--fg); background: transparent; border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; cursor: pointer; transition: border-color 0.15s ease, background 0.15s ease; }
   .opt:hover, .opt:focus-visible { border-color: var(--orange); outline: none; }
@@ -243,10 +171,8 @@ const results = {
   .back:hover { color: var(--fg); }
   .result h2 { font-size: clamp(30px, 4.5vw, 44px); letter-spacing: -0.02em; margin: 0; line-height: 1.1; }
   .result .label { margin-bottom: 10px; }
-  .result .body { font-size: 19px; line-height: 1.55; margin: 18px 0 0; color: var(--fg); }
-  .why { margin: 18px 0 0; padding-left: 20px; color: var(--muted); font-size: 17px; line-height: 1.5; }
-  .why li + li { margin-top: 6px; }
-  .draft-note { margin: 16px 0 0; font-size: 15px; font-weight: 600; color: var(--accent-text); }
+  .result .body { font-size: 19px; line-height: 1.55; margin: 16px 0 0; color: var(--fg); }
+  .result .price { font-weight: 600; }
   .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 26px; margin-top: 28px; }
   .own { margin: 28px 0 0; padding-top: 22px; border-top: 1px solid var(--line); color: var(--muted); font-size: 16px; line-height: 1.5; }
 </style>
