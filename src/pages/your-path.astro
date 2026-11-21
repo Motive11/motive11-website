@@ -12,16 +12,6 @@ const teamCap = pricing.fractional.teamSize;
 
 const questions = [
   {
-    id: "revenue",
-    q: "Roughly what's your annual revenue?",
-    options: [
-      ["lt3", "Under $3M"],
-      ["3to10", "$3M to $10M"],
-      ["10to50", "$10M to $50M"],
-      ["50plus", "$50M and up"],
-    ],
-  },
-  {
     id: "team",
     q: "How many people are on your team?",
     options: [
@@ -32,12 +22,32 @@ const questions = [
     ],
   },
   {
-    id: "two",
-    q: "Two years from now, how do you see this?",
+    id: "revenue",
+    q: "Roughly what's your annual revenue?",
     options: [
-      ["partner", "You're still in it with us as a partner"],
-      ["team", "Our own team runs it"],
-      ["setup", "You set it up, and we take it from there"],
+      ["lt3", "Under $3M"],
+      ["3to10", "$3M to $10M"],
+      ["10to50", "$10M to $50M"],
+      ["50plus", "$50M and up"],
+    ],
+  },
+  {
+    id: "ai",
+    q: "Are you already using AI at all?",
+    options: [
+      ["none", "Not yet"],
+      ["some", "Some, here and there"],
+      ["daily", "Every day"],
+    ],
+  },
+  {
+    id: "goal",
+    q: "What are you looking to hire for?",
+    options: [
+      ["setup", "Just get it set up"],
+      ["one", "Solve one problem"],
+      ["partner", "A partner to fix a few things, ongoing"],
+      ["inhouse", "Someone to build it and teach the team, so it comes in-house"],
     ],
   },
 ];
@@ -45,14 +55,14 @@ const questions = [
 
 <BaseLayout
   title="Your Path - Motive11"
-  description="Three questions, and I'll tell you how I'd work with your business."
+  description="A few questions, and I'll tell you how I'd work with your business."
   noindex
 >
   <div class="draft-bar">Draft for Mark. Not linked anywhere, not indexed.</div>
   <section class="block path">
     <div class="wrap narrow">
       <span class="label">Find your path</span>
-      <h1>Three questions, and I'll tell you how I'd work with you.</h1>
+      <h1>Find out how I'd work with your business.</h1>
 
       <div class="quiz" data-quiz>
         <div class="progress" aria-hidden="true"><i data-bar></i></div>
@@ -84,8 +94,8 @@ const questions = [
         <div class="result" data-result="fractional" hidden>
           <span class="label">Your path</span>
           <h2>Fractional</h2>
-          <p class="body">I'm your AI and systems lead, every month. At kickoff I learn how the business runs and we pick the one number to move. Then I build whatever moves it.</p>
-          <p class="body" data-note="team">You want your own team running it in two years, so I plan the handoff from day one and train your people as we go.</p>
+          <p class="body">I'm your AI and systems lead, every month. At kickoff I learn how the business runs and pick the one number to move. Then I build whatever moves it.</p>
+          <p class="body" data-note="inhouse">You want it in-house, so I plan the handoff from day one and train your people along the way.</p>
           <p class="body price" data-price="std">{monthly}/month, three-month minimum, then month to month.</p>
           <p class="body price" data-price="big">For a team over {teamCap}, I quote it on the call.</p>
           <div class="actions">
@@ -104,7 +114,7 @@ const questions = [
   type A = Record<string, string>;
 
   function route(a: A): string {
-    if (a.two === "setup") return "day";
+    if (a.goal === "setup") return "day";
     if (a.revenue === "lt3") return "day";
     if (a.revenue === "3to10" && a.team === "lt10") return "day";
     return "fractional";
@@ -129,8 +139,8 @@ const questions = [
     bar.style.width = "100%";
     const box = quiz.querySelector<HTMLElement>(`[data-result="${key}"]`)!;
     const big = answers.team === "51to100" || answers.team === "100plus";
-    box.querySelectorAll<HTMLElement>("[data-note='team']").forEach((n) => (n.hidden = answers.two !== "team"));
-    box.querySelectorAll<HTMLElement>("[data-note='after']").forEach((n) => (n.hidden = answers.two === "setup"));
+    box.querySelectorAll<HTMLElement>("[data-note='inhouse']").forEach((n) => (n.hidden = answers.goal !== "inhouse"));
+    box.querySelectorAll<HTMLElement>("[data-note='after']").forEach((n) => (n.hidden = answers.goal === "setup"));
     box.querySelectorAll<HTMLElement>("[data-price='std']").forEach((n) => (n.hidden = big));
     box.querySelectorAll<HTMLElement>("[data-price='big']").forEach((n) => (n.hidden = !big));
     box.hidden = false;
