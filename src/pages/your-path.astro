@@ -32,22 +32,11 @@ const questions = [
     ],
   },
   {
-    id: "ai",
-    q: "Are you already using AI at all?",
+    id: "how",
+    q: "Do you want it set up once, or someone on it every month?",
     options: [
-      ["none", "Not yet"],
-      ["some", "Some, here and there"],
-      ["daily", "Every day"],
-    ],
-  },
-  {
-    id: "goal",
-    q: "What are you looking to hire for?",
-    options: [
-      ["setup", "Just get it set up"],
-      ["one", "Solve one problem"],
-      ["partner", "A partner to fix a few things, ongoing"],
-      ["inhouse", "Someone to build it and teach the team, so it comes in-house"],
+      ["once", "Set it up once"],
+      ["monthly", "Someone on it every month"],
     ],
   },
 ];
@@ -95,8 +84,7 @@ const questions = [
           <span class="label">Your path</span>
           <h2>Fractional</h2>
           <p class="body">I'm your AI and systems lead, every month. At kickoff I learn how the business runs and pick the one number to move. Then I build whatever moves it.</p>
-          <p class="body" data-note="inhouse">You want it in-house, so I plan the handoff from day one and train your people along the way.</p>
-          <p class="body price" data-price="std">{monthly}/month, three-month minimum, then month to month.</p>
+                <p class="body price" data-price="std">{monthly}/month, three-month minimum, then month to month.</p>
           <p class="body price" data-price="big">For a team over {teamCap}, I quote it on the call.</p>
           <div class="actions">
             <a class="btn" href="/book/intro">Book a 20-minute intro call <svg class="arrow"><use href="#arrow" /></svg></a>
@@ -114,7 +102,7 @@ const questions = [
   type A = Record<string, string>;
 
   function route(a: A): string {
-    if (a.goal === "setup") return "day";
+    if (a.how === "once") return "day";
     if (a.revenue === "lt3") return "day";
     if (a.revenue === "3to10" && a.team === "lt10") return "day";
     return "fractional";
@@ -139,8 +127,7 @@ const questions = [
     bar.style.width = "100%";
     const box = quiz.querySelector<HTMLElement>(`[data-result="${key}"]`)!;
     const big = answers.team === "51to100" || answers.team === "100plus";
-    box.querySelectorAll<HTMLElement>("[data-note='inhouse']").forEach((n) => (n.hidden = answers.goal !== "inhouse"));
-    box.querySelectorAll<HTMLElement>("[data-note='after']").forEach((n) => (n.hidden = answers.goal === "setup"));
+    box.querySelectorAll<HTMLElement>("[data-note='after']").forEach((n) => (n.hidden = answers.how === "once"));
     box.querySelectorAll<HTMLElement>("[data-price='std']").forEach((n) => (n.hidden = big));
     box.querySelectorAll<HTMLElement>("[data-price='big']").forEach((n) => (n.hidden = !big));
     box.hidden = false;
