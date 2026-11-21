@@ -26,7 +26,7 @@ export default defineConfig({
   integrations: [
     sitemap({
       // /book is a booking tool reached from links, not a page to rank; /me is Mark's own switch.
-      filter: (page) => !page.includes("/book") && !page.endsWith("/me/"),
+      filter: (page) => !page.includes("/book") && !page.endsWith("/me/") && !page.endsWith("/your-path/"),
     }),
   ],
 });
