@@ -1,12 +1,16 @@
 ---
-// Draft for Mark (November 20, 2026), noindex and unlinked until he approves it. The revenue and team
-// options are copied from the Intro Call form (the motive11 `intro` booking type in AIOS) and the
-// routing is the intro-call cheat sheet (AIOS entities/motive11/context/process/intro-call.md), so a
-// change to either belongs there first.
+// Draft for Mark (November 21, 2026), noindex and unlinked until he approves it. The revenue and team
+// options are copied word for word from the Intro Call form (the motive11 `intro` booking type in
+// AIOS state/booking-worker), so a change to the form changes this page in the same task.
+// The build and Care prices are a proposal from the November 20-21 offer rethink, not yet on sale, so
+// they live here instead of src/lib/pricing.ts; move them there when the offer ships.
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { pricing, usd } from "../lib/pricing";
 
-const day = usd(pricing.onboardingDay.rate);
+const build = usd(8000);
+const careSmall = usd(500);
+const careTeam = usd(2000);
+const day = usd(3500);
 const monthly = usd(pricing.fractional.monthly);
 const teamCap = pricing.fractional.teamSize;
 
@@ -32,11 +36,20 @@ const questions = [
     ],
   },
   {
-    id: "how",
-    q: "Do you want it set up once, or someone on it every month?",
+    id: "own",
+    q: "Where should it live?",
     options: [
-      ["once", "Set it up once"],
-      ["monthly", "Someone on it every month"],
+      ["yes", "In my own accounts, so I own it"],
+      ["no", "Somewhere you host, so I never have to think about it"],
+    ],
+  },
+  {
+    id: "after",
+    q: "Once it's built, what do you want?",
+    options: [
+      ["self", "Run it myself"],
+      ["care", "Someone keeping it running"],
+      ["more", "Someone building on it every month"],
     ],
   },
 ];
@@ -67,30 +80,40 @@ const questions = [
           </fieldset>
         ))}
 
-        <div class="result" data-result="day" hidden>
+        <div class="result" data-result="build" hidden>
           <span class="label">Your path</span>
-          <h2>The AI Onboarding Day</h2>
-          <p class="body">One day, {day}, paid once. I learn how your business runs, put it in one place you own, and leave AI doing real work on it.</p>
-          <p class="body" data-note="after">If you want me on it every month after that, that's Fractional.</p>
+          <h2>Your AIOS and HQ, built in two days</h2>
+          <p class="body price">{build}, paid once.</p>
+          <p class="body">Day one, I learn how your business runs and write all of it into your AI Operating System (AIOS), one place your whole team's AI can work from. Day two, I build your HQ on top of it, one place to run the business from, and train the person who'll own it.</p>
+          <p class="body" data-after="self">Then it's yours to run. When you want something new built, book a day for {day}.</p>
+          <p class="body" data-after="care" data-care="small">Then Care keeps it running: updates, monitoring, and fixing anything that doesn't work right. {careSmall}/month for a team your size.</p>
+          <p class="body" data-after="care" data-care="team">Then Care keeps it running: updates, monitoring, and fixing anything that doesn't work right. {careTeam}/month for a team your size.</p>
+          <p class="body" data-after="more">Then, if you want it to keep growing, Fractional is how I keep building on it every month.</p>
           <div class="actions">
-            <a class="btn" href="/ai-onboarding-day">See the AI Onboarding Day <svg class="arrow"><use href="#arrow" /></svg></a>
-            <a class="text-link" href="/fractional">How Fractional works <svg class="arrow"><use href="#arrow" /></svg></a>
+            <a class="btn" href="/book/intro">Book a 20-minute intro call <svg class="arrow"><use href="#arrow" /></svg></a>
           </div>
-          <p class="own">Everything I build lives in your own accounts, so you own all of it.</p>
+          <p class="own">Everything I build lives in your own accounts, so you own all of it. If you ever want to end it, I get out of your systems and you keep everything.</p>
           <button type="button" class="back" data-restart>Start over</button>
         </div>
 
         <div class="result" data-result="fractional" hidden>
           <span class="label">Your path</span>
           <h2>Fractional</h2>
-          <p class="body">I'm your AI and systems lead, every month. At kickoff I learn how the business runs and pick the one number to move. Then I build whatever moves it.</p>
-                <p class="body price" data-price="std">{monthly}/month, three-month minimum, then month to month.</p>
-          <p class="body price" data-price="big">For a team over {teamCap}, I quote it on the call.</p>
+          <p class="body price" data-price="std">{monthly}/month, three-month minimum, with the build included.</p>
+          <p class="body price" data-price="big">For a team over {teamCap}, I quote it on the call. The build is included.</p>
+          <p class="body">First I build your AI Operating System (AIOS) and your HQ on top of it, in your accounts. Then I keep building every month, on whatever moves the number that matters most to you.</p>
           <div class="actions">
             <a class="btn" href="/book/intro">Book a 20-minute intro call <svg class="arrow"><use href="#arrow" /></svg></a>
             <a class="text-link" href="/fractional">How Fractional works <svg class="arrow"><use href="#arrow" /></svg></a>
           </div>
           <p class="own">Everything I build lives in your own accounts, so you own all of it. If you ever want to end it, I get out of your systems and you keep everything.</p>
+          <button type="button" class="back" data-restart>Start over</button>
+        </div>
+
+        <div class="result" data-result="nofit" hidden>
+          <span class="label">Your path</span>
+          <h2>I'm probably not the right fit</h2>
+          <p class="body">Everything I build lives in your own accounts, and you own all of it. That's the whole point. If you'd rather someone else host it and own it, a software company you subscribe to is a better fit, and I'd rather tell you that now.</p>
           <button type="button" class="back" data-restart>Start over</button>
         </div>
       </div>
@@ -101,11 +124,14 @@ const questions = [
 <script>
   type A = Record<string, string>;
 
+  // Fractional needs $3M+ and either 10+ people or $10M+ (the intro-call price table in AIOS
+  // entities/motive11/context/process/intro-call.md). Everyone else who wants ongoing work starts with the build.
   function route(a: A): string {
-    if (a.how === "once") return "day";
-    if (a.revenue === "lt3") return "day";
-    if (a.revenue === "3to10" && a.team === "lt10") return "day";
-    return "fractional";
+    if (a.own === "no") return "nofit";
+    const big = a.revenue === "10to50" || a.revenue === "50plus";
+    const fractionalFits = a.revenue !== "lt3" && (a.team !== "lt10" || big);
+    if (a.after === "more" && fractionalFits) return "fractional";
+    return "build";
   }
 
   const quiz = document.querySelector<HTMLElement>("[data-quiz]")!;
@@ -126,10 +152,12 @@ const questions = [
     steps.forEach((s) => (s.hidden = true));
     bar.style.width = "100%";
     const box = quiz.querySelector<HTMLElement>(`[data-result="${key}"]`)!;
-    const big = answers.team === "51to100" || answers.team === "100plus";
-    box.querySelectorAll<HTMLElement>("[data-note='after']").forEach((n) => (n.hidden = answers.how === "once"));
-    box.querySelectorAll<HTMLElement>("[data-price='std']").forEach((n) => (n.hidden = big));
-    box.querySelectorAll<HTMLElement>("[data-price='big']").forEach((n) => (n.hidden = !big));
+    const careSize = answers.team === "lt10" ? "small" : "team";
+    box.querySelectorAll<HTMLElement>("[data-after]").forEach((n) => {
+      n.hidden = n.dataset.after !== answers.after || (!!n.dataset.care && n.dataset.care !== careSize);
+    });
+    const overCap = answers.team === "51to100" || answers.team === "100plus";
+    box.querySelectorAll<HTMLElement>("[data-price]").forEach((n) => (n.hidden = (n.dataset.price === "big") !== overCap));
     box.hidden = false;
   }
 
@@ -139,6 +167,7 @@ const questions = [
     if (t.dataset.q) {
       answers[t.dataset.q] = t.dataset.v!;
       steps[at].querySelectorAll(".opt").forEach((o) => o.classList.toggle("is-on", o === t));
+      if (t.dataset.q === "own" && t.dataset.v === "no") return finish();
       at + 1 < steps.length ? show(at + 1) : finish();
     } else if (t.hasAttribute("data-back")) {
       show(Math.max(0, at - 1));
@@ -166,7 +195,7 @@ const questions = [
   .opt.is-on { border-color: var(--orange); background: color-mix(in srgb, var(--orange) 10%, transparent); }
   .back { margin-top: 18px; font: inherit; font-size: 15px; color: var(--muted); background: none; border: 0; padding: 4px 0; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
   .back:hover { color: var(--fg); }
-  .result h2 { font-size: clamp(30px, 4.5vw, 44px); letter-spacing: -0.02em; margin: 0; line-height: 1.1; }
+  .result h2 { font-size: clamp(30px, 4.5vw, 44px); letter-spacing: -0.02em; margin: 0; line-height: 1.1; text-wrap: balance; }
   .result .label { margin-bottom: 10px; }
   .result .body { font-size: 19px; line-height: 1.55; margin: 16px 0 0; color: var(--fg); }
   .result .price { font-weight: 600; }
