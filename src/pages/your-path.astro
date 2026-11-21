@@ -12,16 +12,6 @@ const teamCap = pricing.fractional.teamSize;
 
 const questions = [
   {
-    id: "team",
-    q: "How many people are on your team?",
-    options: [
-      ["lt10", "Under 10"],
-      ["10to50", "10 to 50"],
-      ["51to100", "51 to 100"],
-      ["100plus", "More than 100"],
-    ],
-  },
-  {
     id: "revenue",
     q: "Roughly what's your annual revenue?",
     options: [
@@ -29,6 +19,16 @@ const questions = [
       ["3to10", "$3M to $10M"],
       ["10to50", "$10M to $50M"],
       ["50plus", "$50M and up"],
+    ],
+  },
+  {
+    id: "team",
+    q: "How many people are on your team?",
+    options: [
+      ["lt10", "Under 10"],
+      ["10to50", "10 to 50"],
+      ["51to100", "51 to 100"],
+      ["100plus", "More than 100"],
     ],
   },
   {
