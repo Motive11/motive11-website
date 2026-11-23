@@ -22,7 +22,7 @@ const TTL_MIN = 30;
 // The pages allowed to ask for a pass from another of these sites. A new site joins here, in every copy.
 const SITES = [
   "https://markszymanski.co", "https://www.markszymanski.co",
-  "https://motive11.com", "https://www.motive11.com", "https://hey.motive11.com",
+  "https://motive11.com", "https://www.motive11.com", "https://hey.motive11.com", "https://demo.motive11.com",
 ];
 
 /** True when the request came from a page on another origin (browsers send Origin on every POST). */
