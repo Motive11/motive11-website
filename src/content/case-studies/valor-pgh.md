@@ -24,6 +24,7 @@ services:
 testimonialIds:
   - "77660a59-447d-4c96-aff1-43db6edfe326"
 order: 3
+hidden: true
 ---
 
 ## The client

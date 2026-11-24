@@ -5,11 +5,18 @@ export const pricing = {
   onboardingDay: {
     rate: 3500,
   },
+  build: {
+    rate: 15000,
+  },
+  care: {
+    small: 500,
+    team: 2000,
+  },
   website: {
     care: 99,
   },
   fractional: {
-    monthly: "6,000",
+    monthly: "8,000",
     earlyMonthly: "4,000",
     earlySpots: 2,
     totalSpots: 6,

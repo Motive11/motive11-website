@@ -25,6 +25,7 @@ services:
 testimonialIds:
   - "4c048fec-ef75-471c-9e21-b9f7a4374d0f"
 order: 2
+hidden: true
 ---
 
 ## The firm

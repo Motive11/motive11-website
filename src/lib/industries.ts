@@ -38,9 +38,9 @@ export const industries: Industry[] = [
     slug: "engineering-firms",
     metaTitle: "Fractional AI & Systems Lead: Engineering and Surveying Firms - Motive11",
     metaDescription:
-      "For engineering and surveying firms: one person to run your proposals, your website, and your systems, without the full-time hire.",
+      "For engineering and surveying firms: one person to run your proposals, your systems, and your AI, without the full-time hire.",
     eyebrow: "For engineering and surveying firms",
-    h1Setup: "The person who runs your firm's proposals, website, and systems,",
+    h1Setup: "The person who runs your firm's proposals, systems, and AI,",
     intro:
       "Your engineers should be engineering, not digging through old proposals and county websites to quote the next job. I build the software that takes that off their plate, keep it running, and improve it every month.",
     audience:
@@ -60,7 +60,7 @@ export const industries: Industry[] = [
     midQuoteId: "a85e6793-5b63-4dc5-99d5-f6c18eadd6d6",
     industryFaq: {
       q: "Have you worked with engineering firms?",
-      a: "Yes. Sheffler & Company, a civil engineering and surveying firm, writes its proposals in software I built from 1,568 of their own past proposals, and a routine survey proposal now takes about half the time it used to. The full story is on this page. Every firm prices and scopes its work differently, which is why kickoff starts with how yours does it.",
+      a: "Yes. Sheffler & Company, a civil engineering and surveying firm, writes its proposals in software I built from 1,568 of their own past proposals, and a routine survey proposal now takes about half the time it used to. The full story is on this page. Every firm prices and scopes its work differently, which is why the Build starts with how yours does it.",
     },
     formTag: "Engineering firms page",
   },
@@ -68,9 +68,9 @@ export const industries: Industry[] = [
     slug: "law-firms",
     metaTitle: "Fractional AI & Systems Lead: Law Firms - Motive11",
     metaDescription:
-      "For law firms: one person to run your intake, your website, and your systems, without the full-time hire.",
+      "For law firms: one person to run your intake, your systems, and your AI, without the full-time hire.",
     eyebrow: "For law firms",
-    h1Setup: "The person who runs your firm's intake, website, and systems,",
+    h1Setup: "The person who runs your firm's intake, systems, and AI,",
     intro:
       "Every new case starts as a phone call or a form. I make sure none of them slip through, take the paperwork off your staff's plate, keep it all running, and improve it every month.",
     audience:
@@ -83,13 +83,13 @@ export const industries: Industry[] = [
     organizedMeasures: ["Hours/week your staff spends on intake and filing", "How long it takes to open a new matter", "Cases handled without adding staff"],
     win: "signed case",
     winNoun: "case",
-    storyOrder: ["polverini-and-wiater", "sheffler-and-company"],
+    storyOrder: ["sheffler-and-company", "my-own-aios"],
     heroQuoteId: "4c048fec-ef75-471c-9e21-b9f7a4374d0f",
     heroQuoteExcerpt:
       "He has been a steady presence since launch, managing the site, pushing updates, and giving me his honest read whenever I ask him about next steps. That's exactly what I need.",
     industryFaq: {
       q: "Have you worked with law firms?",
-      a: "Yes. I built Polverini & Wiater's website when the firm launched under its new name, and I've run it since. That's one firm, not fifty, and I'd rather tell you that than pretend otherwise. What carries over is the work itself: intake that never drops anyone, paperwork that files itself, and a site that brings in the cases you want. Kickoff is where I learn how your firm runs.",
+      a: "Yes. I built Polverini & Wiater's website when the firm launched under its new name, and I've run it since. That's one firm, not fifty, and I'd rather tell you that than pretend otherwise. What carries over is the work itself: intake that never drops anyone, paperwork that files itself, and a site that brings in the cases you want. The Build is where I learn how your firm runs.",
     },
     formTag: "Law firms page",
   },
@@ -97,9 +97,9 @@ export const industries: Industry[] = [
     slug: "home-services",
     metaTitle: "Fractional AI & Systems Lead: Contractors and Home Service Companies - Motive11",
     metaDescription:
-      "For contractors and home service companies: one person to run your website, your leads, and your office systems, without the full-time hire.",
+      "For contractors and home service companies: one person to run your leads, your office systems, and your AI, without the full-time hire.",
     eyebrow: "For contractors and home service companies",
-    h1Setup: "The person who runs your website, your leads, and your office systems,",
+    h1Setup: "The person who runs your leads, your office systems, and your AI,",
     intro:
       "You're on a job site when the next lead comes in. I make sure every one gets answered, take the paperwork off your office, keep it all running, and improve it every month.",
     audience:
@@ -112,7 +112,7 @@ export const industries: Industry[] = [
     organizedMeasures: ["How long an estimate takes", "Hours/week on scheduling and follow-up", "Jobs handled without adding office staff"],
     win: "signed job",
     winNoun: "job",
-    storyOrder: ["quality-choice-landscaping", "valor-pgh"],
+    storyOrder: ["sheffler-and-company", "my-own-aios"],
     heroQuoteId: "77660a59-447d-4c96-aff1-43db6edfe326",
     heroQuoteExcerpt:
       "I came to Mark thinking I needed a new website. That's what I asked for. What I ended up getting was somebody who actually took the time to learn my business and came back with ideas I hadn't thought of.",
@@ -121,7 +121,7 @@ export const industries: Industry[] = [
       "If you are a small business owner looking for someone who actually thinks about your business and not just the thing you hired him for, talk to Mark.",
     industryFaq: {
       q: "Have you worked with contractors?",
-      a: "Yes. Quality Choice Landscaping, from their first real website through their move into hardscaping and design-build, plus a roofing company and a renovation business. The trades differ, but the problems repeat: estimate requests that sit, a website that doesn't show the work you want more of, and an office buried in scheduling. Kickoff is where I learn how your jobs run.",
+      a: "Yes. Quality Choice Landscaping, from their first real website through their move into hardscaping and design-build, plus a roofing company and a renovation business. The trades differ, but the problems repeat: estimate requests that sit, a website that doesn't show the work you want more of, and an office buried in scheduling. The Build is where I learn how your jobs run.",
     },
     formTag: "Home services page",
   },

@@ -16,7 +16,7 @@ const isActive = (href: string) => path === href || path.startsWith(`${href}/`);
       ))}
     </nav>
     <div class="tools">
-      <a class="btn small" href="/fractional">Work With Me</a>
+      <a class="btn small" href="/book-a-call">Book a Call</a>
       <button class="icon-btn menu-btn" type="button" data-menu-toggle aria-expanded="false" aria-controls="mobile-nav" aria-label="Open menu">
         <svg width="22" height="22"><use href="#menu" /></svg>
       </button>
@@ -31,7 +31,7 @@ const isActive = (href: string) => path === href || path.startsWith(`${href}/`);
       {site.nav.map((item) => (
         <a href={item.href} aria-current={isActive(item.href) ? "page" : undefined}>{item.label}</a>
       ))}
-      <a class="btn mobile-cta" href="/fractional">Work With Me</a>
+      <a class="btn mobile-cta" href="/book-a-call">Book a Call</a>
     </div>
   </nav>
 </header>

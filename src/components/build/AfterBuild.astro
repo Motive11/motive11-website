@@ -1,0 +1,86 @@
+---
+// The three plans after the Build, as a price table (Mark, November 23, 2026: everyone starts with the
+// Build; Fractional never includes it). Each column repeats nothing from the one before it.
+import { pricing, usd } from "../../lib/pricing";
+import { managedIncludes, fractionalIncludes } from "../../lib/plans";
+
+const day = usd(pricing.onboardingDay.rate);
+const care = usd(pricing.care.team);
+const fractional = usd(pricing.fractional.monthly);
+
+const plans = [
+  {
+    name: "On your own",
+    price: "$0",
+    per: "to me",
+    note: "You pay only the services, about $200 to $300/month, straight to them.",
+    lead: "",
+    items: [
+      "You own everything: the accounts, the code, and the data",
+      "Change it yourself with the AI tools you were trained on",
+      `Need something? Book a day of my time for ${day}`,
+    ],
+    foot: "It's software your business runs on now. Nobody is updating or watching it, so keeping it working is on you.",
+  },
+  {
+    name: "Managed",
+    price: care,
+    per: "/month",
+    note: "Month to month. Cancel any time, and you keep everything.",
+    lead: "Everything in On your own, plus:",
+    items: managedIncludes,
+    foot: `Anything new is a day of building, ${day}.`,
+  },
+  {
+    name: "Fractional AI & Systems Lead",
+    price: fractional,
+    per: "/month",
+    note: "Three-month minimum, then month to month.",
+    lead: "Everything in Managed, plus:",
+    items: fractionalIncludes,
+    foot: "",
+    link: { href: "/fractional", label: "What Fractional is like" },
+    featured: true,
+  },
+];
+---
+<section class="block after-sec">
+  <div class="wrap">
+    <span class="label">After the Build</span>
+    <h2>Then you choose how it keeps going.</h2>
+    <div class="plans">
+      {plans.map((p) => (
+        <div class:list={["plan reveal", { featured: p.featured }]}>
+          {p.featured && <span class="tag">Limited spots</span>}
+          <h3>{p.name}</h3>
+          <p class="price"><b>{p.price}</b><span>{p.per}</span></p>
+          <p class="note">{p.note}</p>
+          {p.lead && <p class="lead-in">{p.lead}</p>}
+          <ul>{p.items.map((i) => <li>{i}</li>)}</ul>
+          {p.foot && <p class="foot">{p.foot}</p>}
+          {p.link && <a class="text-link plan-link" href={p.link.href}>{p.link.label} <svg class="arrow"><use href="#arrow" /></svg></a>}
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .plans { display: grid; gap: 16px; margin-top: clamp(32px, 4vw, 48px); align-items: stretch; }
+  .plan { position: relative; display: flex; flex-direction: column; background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 30px 28px; }
+  .plan.featured { border-color: rgba(255, 106, 26, 0.55); background: linear-gradient(160deg, rgba(255, 106, 26, 0.12), var(--surface) 60%); }
+  .tag { position: absolute; top: -13px; left: 26px; padding: 4px 10px; border-radius: 999px; background: var(--orange); color: #1E1E1F; font-size: 13px; font-weight: 600; }
+  .plan h3 { font-weight: 500; font-size: 22px; letter-spacing: -0.02em; }
+  .price { margin-top: 14px; display: flex; align-items: baseline; gap: 6px; }
+  .price b { font-size: 40px; font-weight: 600; letter-spacing: -0.03em; line-height: 1; }
+  .price span { color: var(--muted); }
+  .note { margin-top: 10px; color: var(--muted); font-size: 15px; line-height: 1.5; }
+  .lead-in { margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--line); font-weight: 500; font-size: 15px; }
+  ul { list-style: none; margin: 14px 0 0; padding: 0; display: grid; gap: 10px; }
+  .plan:not(:has(.lead-in)) ul { margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--line); }
+  li { position: relative; padding-left: 26px; font-size: 16px; line-height: 1.45; }
+  li::before { content: "\2713"; position: absolute; left: 0; color: var(--accent-text); }
+  .foot { margin-top: auto; padding-top: 20px; color: var(--faint); font-size: 14px; line-height: 1.5; }
+  @media (min-width: 1024px) { .plans { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  .plan-link { margin-top: 22px; }
+</style>

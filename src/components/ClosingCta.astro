@@ -4,22 +4,26 @@ interface Props {
   body?: string;
   href?: string;
   label?: string;
+  demo?: boolean;
 }
 
 const {
-  heading = "See what I'd build to save your team time and bring in more revenue.",
-  body = "Here's how I'd work inside your business, what it costs, and what changes in the first three months.",
-  href = "/fractional",
-  label = "Work With Me",
+  heading = "Own what your business knows.",
+  body = "Twenty minutes on a call about your business. If it's a fit, your AIOS and HQ are live 10 business days after setup.",
+  href = "/book-a-call",
+  label = "Book a Call",
+  demo = true,
 } = Astro.props;
 ---
 
 <section class="close">
   <div class="wrap inner">
-    <span class="label">Start here</span>
     <h2>{heading}</h2>
     <p>{body}</p>
-    <a class="btn" href={href}>{label} <svg class="arrow"><use href="#arrow" /></svg></a>
+    <div class="actions">
+      <a class="btn" href={href}>{label} <svg class="arrow"><use href="#arrow" /></svg></a>
+      {demo && <a class="text-link" href="/demo">Or see a demo with your business in it first <svg class="arrow"><use href="#arrow" /></svg></a>}
+    </div>
   </div>
 </section>
 
@@ -33,6 +37,6 @@ const {
   .inner { position: relative; }
   h2 { font-size: clamp(36px, 4.6vw, 60px); max-width: 15em; margin: 0 auto; }
   p { color: var(--muted); font-size: 19px; margin: 22px auto 0; max-width: 28em; text-wrap: pretty; }
-  .btn { margin-top: 36px; }
+  .actions { margin-top: 36px; display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 18px 28px; }
   @media (max-width: 560px) { p { font-size: 17px; } }
 </style>

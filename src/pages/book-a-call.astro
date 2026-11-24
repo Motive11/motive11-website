@@ -1,0 +1,75 @@
+---
+// Draft (November 23, 2026): every "Book a Call" button lands here. The form is the shared widget the
+// AIOS booking Worker serves (state/booking-worker/public/widget.js), embedded for the intro type the way
+// the Fractional page does it, so /book/intro stays a link Mark can send but is never the front door.
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="Book a Call - Motive11" description="A 20-minute call with Mark about your business." noindex>
+  <section class="call">
+    <div class="wrap grid">
+      <div class="side">
+        <span class="label">Intro call</span>
+        <h1>Twenty minutes about your business.</h1>
+        <p class="lead">I ask how the business runs today: where the information lives, who's buried in what, and what you'd want to be different.</p>
+        <div class="who">
+          <img src="/images/mark-szymanski.webp" alt="" width="56" height="56" />
+          <p><b>You'll talk to me, Mark.</b> The person on this call is the one who builds it.</p>
+        </div>
+        <p class="next-h">If it's a fit</p>
+        <ol class="next">
+          <li><span>1</span>You pick a time for your setup call before we hang up.</li>
+          <li><span>2</span>Your AIOS and HQ go live within 10 business days of that call.</li>
+          <li><span>3</span>Then you choose: run it yourself, have me keep it running, or have me keep building.</li>
+        </ol>
+      </div>
+      <div class="booking">
+        <div
+          data-booking
+          data-slug="intro"
+          data-variant="minimal"
+          data-list="motive11"
+          data-entity-only="motive11"
+          data-title-suffix="Motive11"
+          data-photo="/images/mark-szymanski.webp"
+          data-track="Book a call submitted"
+        ></div>
+      </div>
+    </div>
+  </section>
+  <script is:inline src="https://book.motive11.com/widget.js" defer></script>
+</BaseLayout>
+
+<style is:global>
+  :root {
+    --color-ink: var(--fg);
+    --color-paper: var(--bg);
+    --color-surface: var(--surface);
+    --color-border: var(--line);
+    --color-muted: var(--muted);
+    --color-accent: var(--orange);
+    --color-accent-hover: var(--orange-hover);
+    --radius-sm: 6px;
+  }
+  .booking [data-booking]:not([data-bk-ready]) { display: block; min-height: 34rem; }
+  .booking .bk .bk-d.is-sel, .booking .bk .bk-next, .booking .bk .bk-btn { color: #1E1E1F; }
+</style>
+
+<style>
+  .call { padding-block: clamp(56px, 8vw, 104px) clamp(64px, 8vw, 112px); }
+  .grid { display: grid; gap: 40px; align-items: start; }
+  .side h1 { font-size: clamp(40px, 4.2vw, 58px); }
+  .lead { margin-top: 20px; color: var(--muted); font-size: 19px; line-height: 1.55; }
+  .who { display: flex; gap: 14px; align-items: center; margin-top: 28px; padding: 14px 16px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); }
+  .who img { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; object-position: 50% 20%; flex: none; }
+  .who p { margin: 0; color: var(--muted); font-size: 16px; line-height: 1.45; }
+  .who b { display: block; color: var(--fg); font-weight: 500; }
+  .next-h { margin: 32px 0 0; color: var(--fg); font-weight: 500; font-size: 17px; }
+  .next { list-style: none; margin: 12px 0 0; padding: 0; display: grid; gap: 12px; }
+  .next li { display: flex; gap: 12px; align-items: baseline; color: var(--muted); font-size: 16px; line-height: 1.5; }
+  .next span { display: grid; place-items: center; flex: none; width: 24px; height: 24px; border-radius: 50%; border: 1px solid var(--orange); color: var(--orange); font-size: 13px; transform: translateY(-1px); }
+  @media (min-width: 1024px) {
+    .grid { grid-template-columns: minmax(0, 0.72fr) minmax(0, 1.28fr); gap: 56px; }
+    .side { position: sticky; top: 110px; }
+  }
+</style>

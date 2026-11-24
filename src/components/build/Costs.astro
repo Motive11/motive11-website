@@ -1,0 +1,41 @@
+---
+// What a Build client pays the services directly each month. Prices checked November 22, 2026
+// (Vercel, Supabase, Claude Team, Bitwarden pricing pages); re-check before quoting them anywhere new.
+const rows = [
+  ["Vercel", "Runs your HQ on the web", "$20/month, plus $20 for my seat while I'm building"],
+  ["Supabase", "Your database, logins, and files", "$25/month"],
+  ["Claude Team", "The AI your team uses, working from your AIOS", "$25 per person per month, two-person minimum"],
+  ["Anthropic API", "The AI inside your HQ", "Pay as you go, with a monthly cap you set"],
+  ["Bitwarden", "Every login in one place the company owns", "$4 per person per month"],
+  ["Backblaze", "A second copy of your data, somewhere else", "Usually under $1"],
+  ["GitHub, Cloudflare, email sending", "Your code, your domain, and your HQ's emails", "Free at your size"],
+];
+---
+<section class="block costs-sec">
+  <div class="wrap">
+    <span class="label">What you pay others</span>
+    <h2>You also pay a few services directly, about $200 to $250/month for a team of five.</h2>
+    <p class="costs-lead">That money goes straight to these companies on your card, not to me. They're all well-known tools, so look any of them up, or ask me.</p>
+    <div class="costs-wrap">
+      <table class="costs">
+        <thead><tr><th>Service</th><th>What it does for you</th><th>Cost</th></tr></thead>
+        <tbody>
+          {rows.map(([s, w, c]) => <tr><td>{s}</td><td>{w}</td><td>{c}</td></tr>)}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<style>
+  .costs-sec h2 { max-width: 20em; }
+  .costs-lead { margin-top: 18px; max-width: 36em; color: var(--muted); font-size: 18px; line-height: 1.55; }
+  .costs-wrap { margin-top: 32px; overflow-x: auto; border: 1px solid var(--line); border-radius: 14px; }
+  .costs { width: 100%; min-width: 620px; border-collapse: collapse; font-size: 16px; }
+  .costs th, .costs td { text-align: left; padding: 14px 18px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  .costs th { color: var(--faint); font-weight: 500; font-size: 14px; background: var(--surface); }
+  .costs td:first-child { font-weight: 500; }
+  .costs th:first-child, .costs td:first-child { position: sticky; left: 0; z-index: 1; width: 9em; background: var(--surface); box-shadow: 1px 0 0 var(--line); }
+  .costs td:not(:first-child) { color: var(--muted); }
+  .costs tr:last-child td { border-bottom: 0; }
+</style>

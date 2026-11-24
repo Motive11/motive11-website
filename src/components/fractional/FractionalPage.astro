@@ -1,9 +1,10 @@
 ---
 /**
- * The Fractional AI & Systems Lead page, /fractional and its industry versions /fractional/<slug>. A copy of
- * markszymanski.co's /work-with-me (that repo's src/components/WorkWithMe.astro) in Motive11's look,
- * made November 6, 2026 at Mark's request: same sections, order, copy, video, and pricing logic.
- * Prices come from src/lib/pricing.ts, industry wording from src/lib/industries.ts.
+ * The Fractional AI & Systems Lead page, /fractional and its industry versions /fractional/<slug>. Started as
+ * a copy of markszymanski.co's /work-with-me (November 6, 2026) and diverged on November 23, 2026, when
+ * Fractional became the plan that starts after the Build and never includes it. The video is still the
+ * markszymanski.co one. Prices come from src/lib/pricing.ts, the monthly list from src/lib/plans.ts,
+ * industry wording from src/lib/industries.ts.
  */
 import { Image } from "astro:assets";
 import { getCollection } from "astro:content";
@@ -13,6 +14,7 @@ import Testimonial from "../Testimonial.astro";
 import StoryCard from "./StoryCard.astro";
 import { fetchTestimonials } from "../../lib/testimonials";
 import { pricing, usd } from "../../lib/pricing";
+import { fractionalIncludes } from "../../lib/plans";
 import { breadcrumb } from "../../lib/schema";
 import { site } from "../../lib/site";
 import type { Industry } from "../../lib/industries";
@@ -24,7 +26,7 @@ const services = await fetchTestimonials({ tags: ["Services"], sort: "date", ord
 // Only work Motive11 did: Szymanski Media advisory quotes (Huemor) stay on markszymanski.co.
 const testimonials = services.filter((t) => t.entity === "motive11").slice(0, 9);
 
-const cases = (await getCollection("case-studies")).sort((a, b) => a.data.order - b.data.order);
+const cases = (await getCollection("case-studies", (c) => !c.data.hidden)).sort((a, b) => a.data.order - b.data.order);
 const storyFor = new Map<string, string>();
 for (const c of cases) for (const id of c.data.testimonialIds) storyFor.set(id, `/case-studies/${c.id}`);
 
@@ -53,9 +55,11 @@ const recentWork = [
 ].slice(0, 4);
 
 const p = pricing.fractional;
+const build = usd(pricing.build.rate);
+const managed = usd(pricing.care.team);
 
 const takeover = [
-  { name: "Your website", text: "Built for what you actually sell, hosted, kept current, and changed when you ask, with forms that send every lead to the right person." },
+  { name: "Your AIOS", text: "Everything the business knows, in one place your team and every AI work from, kept true as the business changes." },
   { name: "Winning work", text: "Lead tracking that replaces the spreadsheet, follow-up that doesn't depend on someone remembering, and a pipeline you can see at a glance." },
   { name: "Quotes and proposals", text: "Proposals that draft themselves from your own past work, in your format, with the exhibits and fee rules built in." },
   { name: "Research before you quote", text: "The digging someone does on every job, like property records, zoning, or a client's background, done in one report with every source cited." },
@@ -97,8 +101,8 @@ const hires = [
 ];
 
 const timesWords = ["", "one", "two", "three", "four", "five", "six"];
-const monthlyN = Number(p.monthly.replace(/,/g, ""));
-const timesMore = timesWords[Math.round(215000 / (monthlyN * 12))] ?? String(Math.round(215000 / (monthlyN * 12)));
+const firstYear = Number(p.monthly.replace(/,/g, "")) * 12 + pricing.build.rate;
+const timesMore = timesWords[Math.round(215000 / firstYear)] ?? String(Math.round(215000 / firstYear));
 
 const hidden = [
   "One to three months to find them, then more months while they learn your business.",
@@ -127,7 +131,6 @@ const sentences = [
   ["\"Before we can quote a job I have to check the flood maps, the wetlands, the soils, the mining and the slope. Every single time.\"", "One lookup instead of ten, and the report comes back with its sources cited so nothing has to be taken on trust. Half a day became a few seconds."],
   ["\"Somebody has to open every one of these emails, read it, and type the important parts into a spreadsheet.\"", "The documents get read, named properly and filed to the right place on their own. No AI guessing involved, so it is either exactly right or it stops and asks."],
   ["\"People fill out the form on our site and I don't find out for a day. Sometimes two.\"", "Rewired the intake so a lead reaches a human immediately and gets recorded, instead of sitting in a mailbox nobody watches."],
-  ["\"Our site looks like it was built in 2015, and every small change means emailing somebody and waiting a week.\"", "Rebuilt it static and fast, archived the old one, redirected every old URL, and got it off the ageing server. Then I keep it running."],
   ["\"I tried ChatGPT but it doesn't know anything about my business, so I gave up.\"", "The most common one, and the tool was never the problem. It had no context to work from. Giving it that context is most of what I actually do."],
 ];
 
@@ -150,29 +153,32 @@ const steps = [
     body: "Tell me what's going on and I'll tell you straight whether I can move it. If not, I'll say so.",
   },
   {
+    title: "The Build",
+    body: `Ten business days, ${build}, fixed. I talk with you and the people who actually do the work, connect your systems, write down how the business runs, and put your AIOS live in your own accounts. It's also how I learn your business, so there's no paid audit and no report that sits on a shelf.`,
+  },
+  {
     title: "Kickoff",
-    body: "Time with you first, then short conversations with the people who actually do the work, over video or in person if you're local: how work comes in, who does what, and where it gets stuck. You're too deep in your business to see all of it, which is normal, and it's why you bring in someone from outside. Then I tell you what I'd fix first and why, pick the number that proves it, measure where it is today, and write the plan for your first three months. No paid audit, no report that sits on a shelf.",
+    body: "The day your AIOS is live, I tell you what I'd fix first and why, pick the number that proves it, measure where it is today, and write the plan for your first three months.",
   },
   {
     title: "The first three months",
-    body: "I work the plan. One thing at a time, shipped, working, and actually used by your team, then the next. The first one is in your team's hands within 30 days, or your second month is free. If something better shows up along the way, we swap it in.",
+    body: "I work the plan. Something new every week, shipped, working, and actually used by your team. The first one is in your team's hands within 30 days of kickoff, or your second month is free. If something better shows up along the way, we swap it in.",
   },
   {
     title: "After that",
-    body: `Keep going month to month and I bring you the next number to go after. Or step down to Care, $${pricing.website.care}/month to keep your website online, and call me when you need the next project.`,
+    body: `Keep going month to month and I bring you the next number to go after. Or step down to Managed, ${managed}/month to keep it all running, or run it on your own.`,
   },
 ];
 
 const included = [
-  "A strategy call and a one-page report: your number first, then what shipped.",
-  "My read on any tech or AI decision before you spend money on it.",
-  "Everything I build, kept running, and fixed within one business day if it breaks.",
-  "All of it yours. Everything I build lives in accounts you own, is documented, and stays when I leave. No buyout, no exit fee.",
+  ...fractionalIncludes,
+  "Everything I build kept running: updates, security patches, and monitoring.",
   "Your team trained on everything I build, and I check that it's actually getting used.",
-  "Your website, rebuilt on my stack if I didn't build it, then hosted and kept running. I only run what I build.",
+  "All of it yours. Everything I build lives in accounts you own, is documented, and stays when I leave. No buyout, no exit fee.",
 ];
 
 const excluded = [
+  `The Build. Everyone starts there, at ${build}, and Fractional picks up when it's live.`,
   "Ad spend. If we run ads, the budget is yours.",
   "Usage costs: AI credits, paid software, and anything billed by usage. You pay the provider directly.",
   "General IT: email accounts, laptops, printers, other vendors' software.",
@@ -191,7 +197,11 @@ const faqs = [
   },
   {
     q: "How long until I see results?",
-    a: "The first thing usually ships in the first few weeks. The number takes longer to move, which is why there's a three-month minimum: that's enough time to show it.",
+    a: "Something new ships every week. The number takes longer to move, which is why there's a three-month minimum: that's enough time to show it.",
+  },
+  {
+    q: "Why does everyone start with the Build?",
+    a: "Because everything I do after it runs on it: your business written down, your systems connected, and your HQ, the app your team works in. Without it, the first months of Fractional would go to building that anyway, slower and without a fixed price. If I've already built your AIOS, Fractional starts whenever you're ready.",
   },
   {
     q: "What if nothing happens?",
@@ -215,7 +225,7 @@ const faqs = [
   },
   {
     q: "I'm already a client. What happens to what I pay now?",
-    a: "It rolls in. While I'm your fractional lead, your website care and anything else I run for you is covered by the one fee. If you ever stop, we just go back to billing those pieces separately, like before.",
+    a: "It rolls in. While I'm your fractional lead, anything I already run for you is covered by the one fee. If you ever stop, we just go back to billing those pieces separately, like before.",
   },
   {
     q: "Do I tell you what to build?",
@@ -243,7 +253,7 @@ const faqs = [
   },
   {
     q: "What happens after three months?",
-    a: `You keep going month to month and I bring you the next number to go after, or you step down to Care at $${pricing.website.care}/month, which keeps your website online, and call me when you need the next project.`,
+    a: `You keep going month to month and I bring you the next number to go after. Or you step down to Managed at ${managed}/month, which keeps everything running, or you run it on your own and book a day of my time when you need something.`,
   },
   {
     q: "What if we want to run it ourselves someday?",
@@ -264,7 +274,7 @@ const schema = [
 
 <BaseLayout
   title={industry?.metaTitle ?? "Fractional AI & Systems Lead - Motive11"}
-  description={industry?.metaDescription ?? "The AI and systems person your business is missing, without the full-time hire. I run your website and systems, and every month I work on more revenue or less busywork for your team."}
+  description={industry?.metaDescription ?? "The AI and systems person your business is missing, without the full-time hire. After your AIOS is built, I run it and your systems, and every month I work on more revenue or less busywork for your team."}
   schema={schema}
 >
   <section class="hero">
@@ -301,7 +311,7 @@ const schema = [
         </figure>
 
         <p class="body-lg">
-          {industry?.audience ?? "This is for established businesses that need someone to own their website, their systems, and their AI, and don't want to hire for it. One person, one monthly fee, working on whatever moves your business most."}
+          {industry?.audience ?? "This is for established businesses that need someone to own their systems and their AI, and don't want to hire for it. One person, one monthly fee, working on whatever moves your business most."}
         </p>
         <p class="body-lg">
           I find what's costing you the most, measure where it is today, fix it one thing at a time, and show you the number every month.
@@ -317,16 +327,16 @@ const schema = [
         )}
         {p.earlySpotsLeft === 0 && (
           <div class="hero-price">
-            <p class="hero-price-row"><span class="hero-amount">${p.monthly}<span>/month</span></span><span class="hero-for">one person on your website, systems, and AI</span></p>
-            <p class="hero-cap">I work with {inWords(p.totalSpots)} businesses at a time.</p>
+            <p class="hero-price-row"><span class="hero-amount">${p.monthly}<span>/month</span></span><span class="hero-for">one person on your AIOS, your systems, and your AI</span></p>
+            <p class="hero-cap">It starts after the Build, and I work with {inWords(p.totalSpots)} businesses at a time.</p>
           </div>
         )}
         <div class="actions">
-          <a class="btn" href="#start" data-scroll-to="start" data-cta="top">Book an intro call <svg class="arrow"><use href="#arrow" /></svg></a>
+          <a class="btn" href="#start" data-scroll-to="start" data-cta="top">Book a Call <svg class="arrow"><use href="#arrow" /></svg></a>
           <a class="btn ghost" href="#details" data-scroll-to="details">See the details</a>
         </div>
         <p class="note">
-          Don't want a monthly commitment? <a class="inline" href="/ai-onboarding-day" data-track="Fractional onboarding day clicked (top)">Start with the AI Onboarding Day</a>.
+          Everyone starts with the Build: {build}, live in 10 business days. <a class="inline" href="/process" data-track="Fractional build clicked (top)">How the Build works</a>.
         </p>
       </div>
     </div>
@@ -399,7 +409,7 @@ const schema = [
           ))}
         </ol>
         <p class="muted after">Every month you see the number next to where it started, so you always know what you're paying for.</p>
-        <div class="cta"><a class="btn" href="#start" data-scroll-to="start" data-cta="tracks">Book an intro call <svg class="arrow"><use href="#arrow" /></svg></a></div>
+        <div class="cta"><a class="btn" href="#start" data-scroll-to="start" data-cta="tracks">Book a Call <svg class="arrow"><use href="#arrow" /></svg></a></div>
       </div>
     </div>
   </section>
@@ -422,7 +432,7 @@ const schema = [
             </div>
           ))}
         </div>
-        <div class="cta"><a class="btn" href="#start" data-scroll-to="start" data-cta="familiar">Book an intro call <svg class="arrow"><use href="#arrow" /></svg></a></div>
+        <div class="cta"><a class="btn" href="#start" data-scroll-to="start" data-cta="familiar">Book a Call <svg class="arrow"><use href="#arrow" /></svg></a></div>
       </div>
     </div>
   </section>
@@ -441,7 +451,7 @@ const schema = [
             </div>
           ))}
         </div>
-        <div class="cta"><a class="btn" href="#start" data-scroll-to="start" data-cta="how">Book an intro call <svg class="arrow"><use href="#arrow" /></svg></a></div>
+        <div class="cta"><a class="btn" href="#start" data-scroll-to="start" data-cta="how">Book a Call <svg class="arrow"><use href="#arrow" /></svg></a></div>
       </div>
     </div>
   </section>
@@ -468,7 +478,7 @@ const schema = [
           <h2>Me. Not a team you'll never meet.</h2>
           <p class="who-lead">I'm Mark. I run my own business on the same kind of AI setup I'd build for yours.</p>
           <p class="muted">You work with me directly, from the first call on, and I'm the one who answers when something needs to change. Before we talk, read how I work. If it sounds right to you, we'll get along.</p>
-          <a class="text-link who-link" href="https://markszymanski.co/how-i-work" target="_blank" rel="noopener">How I work <svg class="arrow"><use href="#arrow" /></svg></a>
+          <a class="text-link who-link" href="/how-i-work">How I work <svg class="arrow"><use href="#arrow" /></svg></a>
         </div>
       </div>
     </div>
@@ -503,7 +513,7 @@ const schema = [
         </ul>
         <h3 class="sub-h">What changes every month: the work</h3>
         <p class="copy">
-          It's whatever moves your number next. I bring you what that is and why, and you sign off before your team gets it. One thing at a time: when it ships, the next one starts. Every line under <a class="inline" href="#familiar" data-scroll-to="familiar">"Sound familiar?"</a> above was work like this for a real business: proposals that draft themselves, half a day of research done in one report, a website rebuilt so leads stop slipping through, an AI that actually knows the business.
+          It's whatever moves your number next. I bring you what that is and why, and you sign off before your team gets it. One thing at a time: when it ships, the next one starts. Every line under <a class="inline" href="#familiar" data-scroll-to="familiar">"Sound familiar?"</a> above was work like this for a real business: proposals that draft themselves, half a day of research done in one report, leads that reach a person the minute they come in, an AI that actually knows the business.
         </p>
         <h3 class="sub-h">Not included</h3>
         <ul class="minus">
@@ -535,15 +545,15 @@ const schema = [
         ))}
         <div class="hire me">
           <h3>Me</h3>
-          <p class="hire-n">${yearly(p.monthly)}</p>
+          <p class="hire-n">{usd(firstYear)}</p>
           <p class="mini">First year</p>
           <ul>
-            {p.earlySpotsLeft > 0 && <li>${yearly(p.earlyMonthly)} at today's rate</li>}
+            <li>{build} Build, then ${p.monthly}/month</li>
             <li>No benefits or payroll taxes</li>
             <li>No recruiter</li>
-            <li>Starts the day we kick off</li>
+            <li>Live in 10 business days</li>
           </ul>
-          <p class="hire-note">Deciding what's worth building, then building it and running it: your website, your systems, and your AI. Month to month after three months.</p>
+          <p class="hire-note">Deciding what's worth building, then building it and running it: your AIOS, your systems, and your AI. Month to month after three months.</p>
         </div>
       </div>
       <div class="col">
@@ -576,6 +586,7 @@ const schema = [
         ) : (
           <p class="price">${p.monthly}<span>/month</span></p>
         )}
+        <p class="price-l strong">After the Build: {build}, live in 10 business days.</p>
         <p class="muted terms">For teams of up to {p.teamSize} people. Larger teams are quoted on the call. Three-month minimum, then month to month with 30 days' notice. Every month is paid up front, starting at kickoff.</p>
         <div class="guarantee">
           <span class="label">My guarantee</span>
@@ -583,7 +594,7 @@ const schema = [
           <p class="muted g-sub">As long as you give me the access and the time with your team that we agree on at kickoff.</p>
         </div>
         <p class="copy">I only work with {inWords(p.totalSpots)} businesses at a time, so grab a spot while there's an opening.</p>
-        <div class="cta"><a class="btn" href="#start" data-scroll-to="start" data-cta="price">Book an intro call <svg class="arrow"><use href="#arrow" /></svg></a></div>
+        <div class="cta"><a class="btn" href="#start" data-scroll-to="start" data-cta="price">Book a Call <svg class="arrow"><use href="#arrow" /></svg></a></div>
       </div>
     </div>
   </section>
@@ -646,8 +657,7 @@ const schema = [
   <section id="start" class="start anchor">
     <div class="wrap">
       <div class="start-head reveal">
-        <span class="label">Start here</span>
-        <h2>Book an intro call.</h2>
+        <h2>Tell me what's going on.</h2>
         <p class="lead">Pick a time, then tell me who you are and what's going on. If you've read this far, you know what it costs and how it works, so the call is about whether I can move your number.</p>
       </div>
     </div>
@@ -672,11 +682,11 @@ const schema = [
     <div class="wrap">
       <div class="col reveal">
         <h2 class="smaller-h">Not ready for a monthly commitment?</h2>
-        <p class="lead">No problem. Let's start smaller.</p>
-        <a class="day" href="/ai-onboarding-day">
-          <span class="day-name">AI Onboarding Day</span>
-          <span class="day-price">{usd(pricing.onboardingDay.rate)}, one day</span>
-          <span class="day-body">Your business set up for AI in a day, and you trained to use it.</span>
+        <p class="lead">No problem. The Build stands on its own.</p>
+        <a class="day" href="/process">
+          <span class="day-name">The Build</span>
+          <span class="day-price">{build}, 10 business days</span>
+          <span class="day-body">Your AIOS and your HQ, live in your own accounts. Run them yourself after, or have me keep it running for {managed}/month.</span>
         </a>
       </div>
     </div>

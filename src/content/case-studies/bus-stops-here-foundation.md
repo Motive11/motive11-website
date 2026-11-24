@@ -25,6 +25,7 @@ services:
 testimonialIds:
   - "bshf-jerome-bettis-2026-08"
 order: 6
+hidden: true
 ---
 
 ## The client

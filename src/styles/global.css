@@ -83,6 +83,8 @@ h2 { font-weight: 700; font-size: clamp(32px, 3.6vw, 50px); line-height: 1.08; l
 .lead { color: var(--muted); font-size: 19px; margin-top: 20px; max-width: 34em; text-wrap: pretty; }
 
 section.block { padding-block: clamp(88px, 11vw, 140px); }
+/* Two plain sections in a row would stack both paddings into a double gap; only a change of ground keeps both. */
+section.block:not(.tint, .band, .ruled) + section.block:not(.tint, .band, .ruled) { padding-top: 0; }
 
 .theme-dark-only { display: none; }
 .dark .theme-dark-only { display: revert; }

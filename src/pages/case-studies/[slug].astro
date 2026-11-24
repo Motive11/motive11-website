@@ -9,7 +9,7 @@ import Testimonial from "../../components/Testimonial.astro";
 import { fetchTestimonial } from "../../lib/testimonials";
 
 export async function getStaticPaths() {
-  const cases = (await getCollection("case-studies")).sort((a, b) => a.data.order - b.data.order);
+  const cases = (await getCollection("case-studies", (c) => !c.data.hidden)).sort((a, b) => a.data.order - b.data.order);
   return cases.map((entry, i) => ({ params: { slug: entry.id }, props: { entry, next: cases[(i + 1) % cases.length] } }));
 }
 

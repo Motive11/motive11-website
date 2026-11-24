@@ -29,6 +29,9 @@ const caseStudies = defineCollection({
       services: z.array(z.string()),
       testimonialIds: z.array(z.string()).default([]),
       order: z.number(),
+      // Hidden ones build no page and show nowhere (Mark, November 23, 2026: the website-only stories come off
+      // the site while it sells the Build). public/_redirects sends their old addresses to /case-studies.
+      hidden: z.boolean().default(false),
     }),
 });
 

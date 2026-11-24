@@ -1,0 +1,185 @@
+---
+// Draft (November 23, 2026): the Build, every step, for a buyer who wants the detail before paying.
+// The steps mirror AIOS entities/motive11/context/process/aios-build-runbook.md (the client's side of it).
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Costs from "../components/build/Costs.astro";
+import AfterBuild from "../components/build/AfterBuild.astro";
+import AiosScreens from "../components/build/AiosScreens.astro";
+import ClosingCta from "../components/ClosingCta.astro";
+import { pricing, usd } from "../lib/pricing";
+
+const build = usd(pricing.build.rate);
+const day = usd(pricing.onboardingDay.rate);
+
+const steps = [
+  { when: "Before anything", who: "You", time: "20 min", title: "A call", body: `I ask how the business runs. If it's a fit, you pay the ${build} and pick a time for setup before we hang up.` },
+  { when: "Same day", who: "You", time: "10 min", title: "A short form", body: "Which systems you use, who's on the team, and which company email the accounts go under. Only what you know off the top of your head." },
+  { when: "Day 1", who: "You and me", time: "60 to 90 min", title: "Setup call", body: "Every account is created in your company's name, on your card, under a company email that isn't one person's. Every login goes in your company's password manager, and you add me. This is the one step where I need the owner." },
+  { when: "Days 1 to 3", who: "Me", time: "", title: "Your software, connected", body: "The systems you already use start feeding one place you own, and your HQ goes live with your logo. I read your real data before I ask you a single question." },
+  { when: "Days 3 to 7", who: "You, then your people", time: "90 min, then 30 min each", title: "Interviews", body: "How you sell, deliver, and decide. Then thirty minutes with each person who matters, about how their job really gets done." },
+  { when: "Days 6 to 9", who: "Me", time: "", title: "Your business, written down, and your HQ built on it", body: "Everything from the interviews and your data goes into your AIOS, where every AI on your team works from it. Your HQ gets shaped around your work: your stages, your fields, your words." },
+  { when: "Day 10", who: "You, then your team", time: "30 min, then 60 min", title: "Read-back and training", body: "You read what I wrote and tell me what's wrong. Then your team learns your HQ, and you learn how to change it yourself." },
+  { when: "The two weeks after", who: "Me", time: "", title: "Fixes", body: "Anything that doesn't work the way you'd expect, I fix. Then you choose what happens next." },
+];
+
+const yourTime = [
+  ["The call", "20 min"],
+  ["The form", "10 min"],
+  ["Setup call", "60 to 90 min"],
+  ["Your interview", "90 min"],
+  ["Read-back", "30 min"],
+  ["Training", "60 min"],
+];
+
+const included = [
+  "Every step above",
+  "Your accounts, set up in your company's name",
+  "Up to three of your systems connected",
+  "Your AIOS: the business, written down",
+  "Your HQ, the app your team runs on, with as many users as you want",
+  "Training for your team, and for whoever will own it",
+  "Two weeks of fixes after it's live",
+];
+const notIncluded = [
+  `More than three systems connected (each one past that is ${day})`,
+  "Moving you off the systems you already use (it reads from them)",
+  "Automations that send or post on their own",
+  "Your website",
+];
+
+const faqs = [
+  ["Do I really own it?", "Yes. Every account is in your company's name and on your card, and every login is in your password manager. If you ever stop working with me, I remove myself and you keep everything."],
+  ["Can't I just do this myself with AI?", "You could. I build most of this with AI too, and I teach how on YouTube. The difference is I know how the pieces connect and how to make it hold up with a whole team using it. It's the same choice as your website: you could build it, it would cost you a lot of hours, and it wouldn't be as good."],
+  ["Why not just use ChatGPT or Claude?", "Keep using them. But today it's one person talking to one chat, and everyone on your team has their own. This is the business's system: written down once, so every one of those chats works from the same thing."],
+  ["Is this just a CRM?", "It has one in it, but that's one screen. A CRM holds contacts and deals. This holds how the business works: what your people know, the work in flight, the money, and an AI that reads all of it."],
+  ["What if my software has no way to connect?", "Then it comes in from a regular export. Most industry software can export, even when it can't connect."],
+  ["What does it need from my team?", "Thirty minutes each for an interview and an hour of training. Nobody gives up a day."],
+  ["What if it runs late?", "The 10 business days are counted from your setup call. If your team isn't working in it by then, you get 10% of the price back for every week it's late. The only thing that pauses the clock is an interview that gets moved on your side."],
+  ["What happens after the 10 days?", "You pick one of three ways forward, below. All three keep everything in your accounts."],
+];
+---
+
+<BaseLayout
+  title="How the Build Works - Motive11"
+  description="Every step of the Build, how much of your time it takes, what you pay the services, and what happens after."
+  noindex
+>
+  <section class="intro">
+    <div class="wrap narrow">
+      <span class="label">The process</span>
+      <h1>How the Build works.</h1>
+      <p class="lead">Ten business days from your setup call to a business running on its own AI Operating System (AIOS), in your own accounts. About five hours of your time. Here's every step.</p>
+      <div class="price-card">
+        <div>
+          <p class="price">{build}</p>
+          <p class="price-note">One fixed price, paid when you say yes.</p>
+          <p class="guarantee"><b>The guarantee:</b> your team is working in it within 10 business days of your setup call, or you get 10% back for every week it's late.</p>
+        </div>
+        <a class="btn" href="/book-a-call">Book a Call <svg class="arrow"><use href="#arrow" /></svg></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="block steps-sec">
+    <div class="wrap narrow">
+      <ol class="steps">
+        {steps.map((s, i) => (
+          <li class="step">
+            <span class="n">{i + 1}</span>
+            <div class="body">
+              <div class="meta"><span>{s.when}</span><span>{s.who}</span>{s.time && <span>{s.time}</span>}</div>
+              <h3>{s.title}</h3>
+              <p>{s.body}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="wrap">
+      <span class="label">What you get</span>
+      <h2>Two things, both yours.</h2>
+      <AiosScreens />
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="wrap narrow two">
+      <div class="box">
+        <span class="label">Your time, all of it</span>
+        <ul class="time">{yourTime.map(([t, d]) => <li><span>{t}</span><b>{d}</b></li>)}</ul>
+        <p class="aside">About five hours over 10 business days. Each person on your team: 30 minutes, plus training.</p>
+      </div>
+      <div class="box">
+        <span class="label">Included in {build}</span>
+        <ul class="ticks">{included.map((i) => <li>{i}</li>)}</ul>
+        <span class="label sub">Not included</span>
+        <ul class="dashes">{notIncluded.map((i) => <li>{i}</li>)}</ul>
+      </div>
+    </div>
+  </section>
+
+  <Costs />
+  <AfterBuild />
+
+  <section class="block faq-sec">
+    <div class="wrap narrow">
+      <span class="label">Questions</span>
+      <h2>What owners ask before they say yes.</h2>
+      <div class="faqs">
+        {faqs.map(([q, a]) => (
+          <details class="faq">
+            <summary>{q}</summary>
+            <p>{a}</p>
+          </details>
+        ))}
+      </div>
+      <p class="demo-line">Want to click around one first? <a class="text-link" href="/demo">See a demo for your business <svg class="arrow"><use href="#arrow" /></svg></a></p>
+    </div>
+  </section>
+
+  <ClosingCta />
+</BaseLayout>
+
+<style>
+  .narrow > * { max-width: 880px; }
+  .intro { padding-block: clamp(64px, 9vw, 112px) clamp(16px, 3vw, 32px); }
+  .lead { margin-top: 22px; color: var(--muted); font-size: 20px; line-height: 1.55; }
+  .price-card { margin-top: 32px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 20px 32px; background: var(--surface); border: 1px solid rgba(255, 106, 26, 0.45); border-radius: 18px; padding: clamp(22px, 3vw, 32px); }
+  .price { font-size: clamp(40px, 5vw, 56px); font-weight: 600; letter-spacing: -0.03em; line-height: 1; color: var(--accent-text); }
+  .price-note { margin-top: 10px; color: var(--muted); }
+  .guarantee { margin-top: 8px; max-width: 34em; color: var(--muted); font-size: 15px; line-height: 1.5; }
+  .guarantee b { color: var(--fg); font-weight: 500; }
+  .steps-sec { padding-top: clamp(24px, 4vw, 48px); }
+  .steps { list-style: none; margin: 0; padding: 0; }
+  .step { position: relative; display: grid; grid-template-columns: 44px 1fr; gap: 18px; padding-bottom: 30px; }
+  .step:not(:last-child)::before { content: ""; position: absolute; left: 21px; top: 46px; bottom: 4px; width: 2px; background: var(--line); }
+  .n { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 999px; background: var(--orange); color: #1E1E1F; font-weight: 600; font-size: 17px; }
+  .meta { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 14px; color: var(--faint); padding-top: 2px; }
+  .meta span:first-child { color: var(--accent-text); font-weight: 500; }
+  .body h3 { margin-top: 4px; font-weight: 500; font-size: 22px; letter-spacing: -0.02em; line-height: 1.3; }
+  .body p { margin-top: 6px; color: var(--muted); font-size: 17px; line-height: 1.55; }
+  .two { display: grid; gap: 16px; }
+  .box { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: clamp(24px, 3vw, 32px); }
+  .box ul { list-style: none; margin: 16px 0 0; padding: 0; display: grid; gap: 10px; }
+  .time li { display: flex; justify-content: space-between; gap: 16px; padding-bottom: 10px; border-bottom: 1px solid var(--line); }
+  .time span { color: var(--muted); }
+  .time b { font-weight: 500; white-space: nowrap; }
+  .ticks li, .dashes li { position: relative; padding-left: 26px; line-height: 1.5; }
+  .ticks li::before { content: "\2713"; position: absolute; left: 0; color: var(--accent-text); }
+  .dashes li { color: var(--muted); }
+  .dashes li::before { content: "\2013"; position: absolute; left: 4px; color: var(--faint); }
+  .label.sub { display: block; margin-top: 26px; }
+  .aside { margin-top: 18px; color: var(--muted); font-size: 15px; line-height: 1.5; }
+  .faqs { margin-top: 32px; border-top: 1px solid var(--line); }
+  .faq { border-bottom: 1px solid var(--line); }
+  .faq summary { cursor: pointer; list-style: none; padding: 20px 0; font-size: 19px; font-weight: 500; letter-spacing: -0.01em; display: flex; justify-content: space-between; gap: 16px; }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq summary::after { content: "+"; color: var(--accent-text); font-weight: 400; }
+  .faq[open] summary::after { content: "\2212"; }
+  .faq p { padding-bottom: 20px; color: var(--muted); font-size: 17px; line-height: 1.6; max-width: 44em; }
+  .demo-line { margin-top: 32px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; }
+  @media (min-width: 860px) { .two { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+</style>

@@ -22,6 +22,7 @@ services:
 testimonialIds:
   - "valiant-3-beth-vietmeier-2026-08"
 order: 4
+hidden: true
 ---
 
 ## The client

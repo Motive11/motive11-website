@@ -12,12 +12,12 @@ export const site = {
     name: "Mark Szymanski",
     url: "https://markszymanski.co",
   },
-  introCall: "/book/intro",
+  introCall: "/book-a-call",
   // Public site key of the "motive11.com" Turnstile widget (Cloudflare account, invisible mode).
   turnstileSiteKey: "0x4AAAAAACXtS2UMq_9S9YOw",
   nav: [
-    { label: "Case studies", href: "/case-studies" },
-    { label: "Services", href: "/services" },
+    { label: "How it works", href: "/process" },
+    { label: "See a demo", href: "/demo" },
     { label: "About", href: "/about" },
   ],
 };

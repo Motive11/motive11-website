@@ -6,10 +6,19 @@
 /work-with-me/*                  /fractional                     301
 /partnership                     /fractional                     301
 /partnership/*                   /fractional/:splat              301
-/pricing            /services                         301
+/pricing            /process                          301
+/services           /process                          301
 /about-us           /about                            301
 /contact            /book/intro                       301
 /start              https://markszymanski.co/         301
+
+# Website-only case studies, hidden November 23, 2026 (hidden: true in their markdown). 302 so they can come back.
+/case-studies/bus-stops-here-foundation    /case-studies   302
+/case-studies/pindrop                      /case-studies   302
+/case-studies/polverini-and-wiater         /case-studies   302
+/case-studies/quality-choice-landscaping   /case-studies   302
+/case-studies/valiant-3-communications     /case-studies   302
+/case-studies/valor-pgh                    /case-studies   302
 
 # Every booking link is served by the one /book page, which reads the path itself.
 /book/l/:token       /book/   200

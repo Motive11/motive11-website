@@ -25,6 +25,7 @@ services:
 testimonialIds:
   - "pindrop-shawn-markosky-2026-08"
 order: 7
+hidden: true
 ---
 
 ## The client

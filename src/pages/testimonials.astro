@@ -11,7 +11,7 @@ import { site } from "../lib/site";
 const all = await fetchTestimonials({ sort: "date", order: "desc", limit: 1000 });
 const testimonials = all.filter((t) => t.entity === "motive11");
 
-const cases = await getCollection("case-studies");
+const cases = await getCollection("case-studies", (c) => !c.data.hidden);
 const storyFor = new Map<string, string>();
 for (const c of cases) for (const id of c.data.testimonialIds) storyFor.set(id, `/case-studies/${c.id}`);
 

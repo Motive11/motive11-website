@@ -1,65 +1,45 @@
 ---
 import { Image } from "astro:assets";
-import { getCollection } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
-import CaseRow from "../components/CaseRow.astro";
 import ClientLogos from "../components/ClientLogos.astro";
 import ClosingCta from "../components/ClosingCta.astro";
 import { site } from "../lib/site";
-import { offers } from "../lib/offers";
+import { pricing, usd } from "../lib/pricing";
+import AfterBuild from "../components/build/AfterBuild.astro";
+import AiosScreens from "../components/build/AiosScreens.astro";
+const build = usd(pricing.build.rate);
+const day = usd(pricing.onboardingDay.rate);
+const ownerTime: [string, number][] = [["Call", 20], ["Form", 10], ["Setup", 90], ["Interview", 90], ["Read-back", 30], ["Training", 60]];
 import Testimonial from "../components/Testimonial.astro";
 import { fetchTestimonial } from "../lib/testimonials";
 import portrait from "../assets/mark/portrait.webp";
-// Every still is frame one of its recording, so the video takes over without a jump. The portal comes from the
-// local demo copy (scripts/showcase/portal_*.py), the sites from record.py; R2 bucket motive11-media.
-// Re-record a site and bump -vN in its URL, since those files are cached as immutable.
-import portal from "../assets/showcase/portal.webp";
-import v3Site from "../assets/showcase/v3.webp";
-import qclSite from "../assets/showcase/qcl.webp";
-import bshfSite from "../assets/showcase/bshf.webp";
+import ownImg from "../assets/case-studies/my-own-aios/work-hq-pipelines.webp";
+import shefflerImg from "../assets/case-studies/sheffler-and-company/portal-leads-queue.webp";
+// The still is frame one of its recording, so the video takes over without a jump. scripts/showcase/aios_demo.py
+// records the fictional Halden demo; bump -vN on a re-record, since the files are cached as immutable.
+import aiosDemo from "../assets/showcase/aios.webp";
 
-const media = "https://media.motive11.com/showcase";
-
-// Owners' own words, from the symptom map in AIOS entities/szymanski-media/context/offer-stack/
-// sales-map.html. One per kind of pain, and mostly not the six the Fractional page already pairs with
-// what I did about them.
-const familiar = [
-  "Nothing gets quoted unless I do it, so in our busy season jobs just sit there.",
-  "She re-enters the same numbers every single day so the scorecards stay current.",
-  "If he left, we'd be in real trouble.",
-  "We've got six systems and none of them talk.",
-  "We bought the tool and we still do it by hand.",
-  "Every time I want a small change to the website I have to email somebody and wait.",
-  "We get the leads, we just don't call them back fast enough.",
-  "Our stuff is confidential, so AI is off the table for us.",
-];
-
-const cases = (await getCollection("case-studies")).sort((a, b) => a.data.order - b.data.order).slice(0, 3);
 // Bud Sheffler's, because it has his photo. The excerpt is his own words, the same lines the Fractional page uses.
 const bud = await fetchTestimonial("8b67a481-a547-4d8f-a6e1-c4554bb6f0fe");
 const quote = bud && { ...bud, text: "When my team finds something that needs to change, Mark fixes it fast, often the same day. At this point he knows how our business runs as well as anyone in the building." };
 
 const showcase = [
-  { img: portal, video: `${media}/portal-v1.mp4`, addr: "Sheffler & Company portal", alt: "Clicking through the proposal portal I built for Sheffler & Company, from a lead to its site research to the drafted proposal, shown with demo data", caption: "A proposal portal for Sheffler & Company, an engineering and surveying firm, shown with demo data", href: "/case-studies/sheffler-and-company" },
-  { img: v3Site, video: `${media}/v3-v2.mp4`, addr: "valiant3communications.com", alt: "The Valiant 3 website", caption: "A rebuilt website for Valiant 3, a sports agency", href: "/case-studies/valiant-3-communications" },
-  { img: qclSite, video: `${media}/qcl-v2.mp4`, addr: "qualitychoicelandscaping.com", alt: "The Quality Choice Landscaping website", caption: "A website and back office for Quality Choice Landscaping", href: "/case-studies/quality-choice-landscaping" },
-  { img: bshfSite, video: `${media}/bshf-v2.mp4`, addr: "thebusstopsherefoundation.org", alt: "The Bus Stops Here Foundation website", caption: "One website for The Jerome Bettis Bus Stops Here Foundation", href: "/case-studies/bus-stops-here-foundation" },
+  { img: aiosDemo, video: "/showcase/aios-v2.mp4", addr: "demo.motive11.com/halden-roofing", alt: "Clicking through a demo AIOS for a made-up roofing company: today's numbers, the jobs board, one job, the AI's drafts waiting for review, and the written-down business", caption: "A demo AIOS for Halden Roofing, a made-up company. Every name and number in it is invented", href: "https://demo.motive11.com/halden-roofing" },
 ];
 const lockIcon = "M5 7V5a3 3 0 0 1 6 0v2h.5A1.5 1.5 0 0 1 13 8.5v5a1.5 1.5 0 0 1-1.5 1.5h-7A1.5 1.5 0 0 1 3 13.5v-5A1.5 1.5 0 0 1 4.5 7H5Zm1.5 0h3V5a1.5 1.5 0 0 0-3 0v2Z";
 ---
 
 <BaseLayout
-  title="Motive11 - AI and Systems for Established Businesses"
+  title="Motive11 - Custom AI Systems You Own"
   description={site.description}
 >
   <div class="hero">
     <div class="wrap">
-      <a class="pill" href="/case-studies/sheffler-and-company"><span class="dot"></span>How I built an engineering firm's proposal portal in 44 days<svg class="arrow"><use href="#arrow" /></svg></a>
-      <h1>I build the systems your business runs on.</h1>
-      <p class="sub">I'm <span class="name">Mark Szymanski</span>. I find the expensive, repetitive work inside a business and build the system that does it instead, then I stay on to keep it running. Motive11 is my company, and <b>it's just me, plus AI doing the work a team used to.</b></p>
+      <h1>AI tools change. People leave. What your business knows should stay put.</h1>
+      <p class="sub">Right now it's spread across people, inboxes, and AI accounts your business doesn't control, with no one place that has the real answer. I'm <span class="name">Mark Szymanski</span>, and I fix that. I build your company its own AI Operating System (AIOS), everything the business knows and the data it runs on in one place every AI on your team works from, and an HQ, the app your team runs the business on. Built in your accounts, so <b>you own all of it.</b></p>
       <div class="actions">
-        <a class="btn" href="/fractional">Work With Me <svg class="arrow"><use href="#arrow" /></svg></a>
-        <a class="text-link" href="/case-studies">See the Work <svg class="arrow"><use href="#arrow" /></svg></a>
+        <a class="btn" href="/book-a-call">Book a Call <svg class="arrow"><use href="#arrow" /></svg></a>
+        <a class="text-link" href="/demo">See a demo for your business <svg class="arrow"><use href="#arrow" /></svg></a>
       </div>
 
       <div class="stage" data-showcase>
@@ -79,8 +59,8 @@ const lockIcon = "M5 7V5a3 3 0 0 1 6 0v2h.5A1.5 1.5 0 0 1 13 8.5v5a1.5 1.5 0 0 1
           </div>
         </div>
         <div class="showcase-foot">
-          <p class="caption"><span data-cap>{showcase[0].caption}</span>. <a href={showcase[0].href} data-caption-link>Read the Case Study</a></p>
-          <div class="dots" role="group" aria-label="Projects">
+          <p class="caption"><span data-cap>{showcase[0].caption}</span>. <a href={showcase[0].href} data-caption-link target="_blank" rel="noopener">Click around it yourself</a></p>
+          <div class="dots" role="group" aria-label="Projects" hidden={showcase.length < 2}>
             {showcase.map((s, i) => (
               <button type="button" class:list={["dot", { "is-on": i === 0 }]} aria-label={s.addr} aria-current={i === 0 ? "true" : undefined} data-dot={i}></button>
             ))}
@@ -92,15 +72,84 @@ const lockIcon = "M5 7V5a3 3 0 0 1 6 0v2h.5A1.5 1.5 0 0 1 13 8.5v5a1.5 1.5 0 0 1
 
   <div class="wrap logos-wrap"><ClientLogos /></div>
 
-  <section class="block familiar-sec">
+  <section class="block risk-sec">
     <div class="wrap">
-      <span class="label">Sound familiar?</span>
-      <h2>If you've said one of these, I can help.</h2>
-      <p class="lead">Real things owners have told me. None of them sounds like a technology problem, and every one is the kind of thing I fix.</p>
-      <ul class="familiar">
-        {familiar.map((line) => <li class="reveal"><p>{line}</p></li>)}
-      </ul>
-      <div class="familiar-cta"><a class="btn" href="/fractional/">See how I fix them <svg class="arrow"><use href="#arrow" /></svg></a></div>
+      <span class="label">The risk</span>
+      <h2>Three ways it gets lost right now.</h2>
+      <p class="risk-lead">Nobody took it on purpose. It's just scattered, and it's gone the day something changes.</p>
+      <div class="risks">
+        <div class="risk reveal">
+          <span class="r-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 19c0-2.8-2.5-5-5.5-5S3 16.2 3 19M8.5 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7zM16 11h6" /></svg></span>
+          <h3>Someone leaves</h3>
+          <p>You shut off their account, and everything they taught it goes with them. The next person starts from zero.</p>
+          <div class="chips gone" aria-hidden="true"><span>Their prompts</span><span>Their files</span><span>How they did the job</span></div>
+        </div>
+        <div class="risk reveal">
+          <span class="r-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h13l-3-3M20 17H7l3 3" /></svg></span>
+          <h3>You switch AI tools</h3>
+          <p>Everything your team built up inside one AI company's app stays there. Change tools, or the tool changes, and you start over.</p>
+          <div class="chips gone" aria-hidden="true"><span>Memories</span><span>Projects</span><span>Custom assistants</span></div>
+        </div>
+        <div class="risk reveal">
+          <span class="r-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h6v6H4zM14 3h7v5h-7zM15 13h5v8h-5zM3 15h8v5H3z" /></svg></span>
+          <h3>There's no one answer</h3>
+          <p>Five people, five tools, five versions of the numbers. Every question means asking around, and every handoff loses something.</p>
+          <div class="chips scattered" aria-hidden="true"><span>ChatGPT</span><span>Claude</span><span>Copilot</span><span>Gemini</span><span>A notes app</span></div>
+        </div>
+      </div>
+      <p class="fix">The fix is one AIOS in the company's name: what the business knows and the data it runs on, in one place you own. Everyone's AI works from it, and when someone leaves, nothing goes with them.</p>
+    </div>
+  </section>
+
+  <section class="block simple-sec" id="build">
+    <div class="wrap">
+      <span class="label">The Build</span>
+      <h2>Your AIOS and your HQ, live in 10 business days.</h2>
+      <div class="build-card">
+        <div>
+          <p class="build-price">{build}</p>
+          <p class="build-note">One fixed price. Live within 10 business days of your setup call, or 10% back for every week it's late.</p>
+          <div class="your-time">
+            <p class="yt-h"><b>About 5 hours of your time.</b> The rest is mine.</p>
+            <div class="yt-bar" aria-hidden="true">{ownerTime.map(([, m]) => <i style={`flex:${m}`}></i>)}</div>
+            <ul class="yt-list">{ownerTime.map(([n, m]) => <li><span>{n}</span>{m} min</li>)}</ul>
+          </div>
+          <p class="build-note">No software licenses. It runs in your own accounts, so you pay only for hosting and the AI, about $200 to $300/month, straight to them.</p>
+        </div>
+        <a class="btn" href="/book-a-call">Book a Call <svg class="arrow"><use href="#arrow" /></svg></a>
+      </div>
+      <h3 class="whats-in">What you get: two things, both yours</h3>
+      <AiosScreens />
+      <p class="smaller">Up to three of your systems connected; each one past that is {day}. <a class="text-link" href="/process">How the 10 days go <svg class="arrow"><use href="#arrow" /></svg></a></p>
+    </div>
+  </section>
+
+
+  <section class="block proof-sec">
+    <div class="wrap">
+      <span class="label">Proof</span>
+      <h2>I built one for my own business first. Then for my clients.</h2>
+      <div class="proofs">
+        <a class="proof reveal" href="/case-studies/my-own-aios">
+          <div class="p-img"><Image src={ownImg} alt="The Pipelines screen in my own HQ." widths={[600, 900, 1200]} sizes="(min-width: 900px) 560px, 100vw" loading="lazy" /></div>
+          <div class="p-body">
+            <span class="p-who">My own two businesses</span>
+            <p class="p-n">36</p>
+            <p class="p-l">automations running every day, on the same system I build for clients</p>
+            <span class="text-link">How I run it <svg class="arrow"><use href="#arrow" /></svg></span>
+          </div>
+        </a>
+        <a class="proof reveal" href="/case-studies/sheffler-and-company">
+          <div class="p-img"><Image src={shefflerImg} alt="The lead queue in the Sheffler &amp; Company portal, shown with demo data." widths={[600, 900, 1200]} sizes="(min-width: 900px) 560px, 100vw" loading="lazy" /></div>
+          <div class="p-body">
+            <span class="p-who">Sheffler &amp; Company, a 50-year-old engineering firm</span>
+            <p class="p-n">150+</p>
+            <p class="p-l">proposals their team has written in software they own, a routine one in half the time</p>
+            <span class="text-link">See what I built <svg class="arrow"><use href="#arrow" /></svg></span>
+          </div>
+        </a>
+      </div>
+      <div class="familiar-cta"><a class="btn" href="/book-a-call">Book a Call <svg class="arrow"><use href="#arrow" /></svg></a></div>
     </div>
   </section>
 
@@ -111,63 +160,14 @@ const lockIcon = "M5 7V5a3 3 0 0 1 6 0v2h.5A1.5 1.5 0 0 1 13 8.5v5a1.5 1.5 0 0 1
         <figcaption><b>Mark Szymanski</b><span>Founder, Motive11</span></figcaption>
       </figure>
       <div>
-        <span class="label">How it works</span>
+        <span class="label">Who does the work</span>
         <h2>One person and a lot of AI, instead of an agency and a lot of meetings.</h2>
-        <div class="steps">
-          <div class="step">
-            <span class="n">1</span>
-            <h3>I find where the week goes</h3>
-            <p>I learn what your team does all day and find the one job that costs the most time.</p>
-          </div>
-          <div class="step">
-            <span class="n">2</span>
-            <h3>I build it around how you work</h3>
-            <p>The system fits the way your people already do the job, so nobody has to learn a new way of working.</p>
-          </div>
-          <div class="step">
-            <span class="n">3</span>
-            <h3>I stay on</h3>
-            <p>When something needs to change, you tell me and it gets done. You never get handed off to someone else.</p>
-          </div>
-        </div>
+        <p class="how-lead">You know your industry. I know AI. I use it for the judgment calls, and to build the pieces you do over and over so they run on their own. The AI does about 90% of the work, and your team checks it.</p>
       </div>
     </div>
   </section>
 
-  <section class="block offers-sec">
-    <div class="wrap">
-      <div class="head">
-        <div>
-          <span class="label">What I do</span>
-          <h2>Two ways to work with me.</h2>
-        </div>
-        <a class="text-link" href="/services">All the details <svg class="arrow"><use href="#arrow" /></svg></a>
-      </div>
-      <div class="offer-grid">
-        {offers.map((o) => (
-          <a class:list={["offer reveal", { featured: o.featured }]} href={o.page}>
-            <h3>{o.name}</h3>
-            <span class="price">{o.price}</span>
-            <p>{o.short}</p>
-            <span class="more">Learn more <svg class="arrow"><use href="#arrow" /></svg></span>
-          </a>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <section class="block" id="work">
-    <div class="wrap">
-      <div class="head">
-        <div>
-          <span class="label">Recent work</span>
-          <h2>Three firms, three different problems.</h2>
-        </div>
-        <a class="text-link" href="/case-studies">Every case study <svg class="arrow"><use href="#arrow" /></svg></a>
-      </div>
-      {cases.map((entry, i) => <CaseRow entry={entry} flip={i % 2 === 1} />)}
-    </div>
-  </section>
+  <AfterBuild />
 
   {quote && (
     <section class="quote">
@@ -176,19 +176,6 @@ const lockIcon = "M5 7V5a3 3 0 0 1 6 0v2h.5A1.5 1.5 0 0 1 13 8.5v5a1.5 1.5 0 0 1
       </div>
     </section>
   )}
-
-  <section class="block">
-    <div class="wrap">
-      <span class="label">Who I build for</span>
-      <h2>Established businesses doing $3 million or more a year.</h2>
-      <div class="fit">
-        <div><span class="label">The business</span><p>Ten or more people on payroll, with an office that keeps the work moving.</p></div>
-        <div><span class="label">The problem</span><p>A specific person losing real hours every week to proposals, research, intake, scheduling, or data entry.</p></div>
-        <div><span class="label">The owner</span><p>Knows the numbers, like how many leads come in and how many close, and wants the problem fixed for good.</p></div>
-      </div>
-      <p class="smaller">Not quite there yet? <a class="text-link" href="/ai-onboarding-day">Start with the AI Onboarding Day <svg class="arrow"><use href="#arrow" /></svg></a></p>
-    </div>
-  </section>
 
   <ClosingCta />
 </BaseLayout>
@@ -347,12 +334,47 @@ const lockIcon = "M5 7V5a3 3 0 0 1 6 0v2h.5A1.5 1.5 0 0 1 13 8.5v5a1.5 1.5 0 0 1
 
   .logos-wrap { padding-top: clamp(64px, 8vw, 96px); }
 
-  .familiar-sec h2 { max-width: 16em; }
-  .familiar-sec .lead { margin-top: 20px; max-width: 34em; color: var(--muted); font-size: 19px; line-height: 1.55; }
-  .familiar { list-style: none; margin: 48px 0 0; padding: 0; display: grid; gap: 14px; }
-  .familiar li { position: relative; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 24px 26px 24px 54px; }
-  .familiar li::before { content: "\201C"; position: absolute; left: 22px; top: 14px; color: var(--accent-text); font-size: 36px; line-height: 1; font-weight: 500; }
-  .familiar p { font-size: 19px; font-weight: 500; letter-spacing: -0.015em; line-height: 1.4; color: var(--fg); }
+  .risk-sec h2 { max-width: 20em; }
+  .proof-sec h2 { max-width: 16em; }
+  .risk-lead { margin-top: 20px; max-width: 34em; color: var(--muted); font-size: 19px; line-height: 1.55; }
+  .risks { display: grid; gap: 14px; margin-top: 48px; }
+  .risk { display: flex; flex-direction: column; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 26px; }
+  .r-ic { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 12px; background: rgba(255, 106, 26, 0.12); color: var(--orange); }
+  .r-ic svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+  .risk h3 { margin-top: 20px; font-weight: 500; font-size: 22px; letter-spacing: -0.02em; }
+  .risk p { margin-top: 10px; color: var(--muted); font-size: 17px; line-height: 1.55; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: auto; padding-top: 22px; }
+  .chips span { padding: 6px 12px; border-radius: 999px; border: 1px solid var(--line); font-size: 14px; color: var(--fg); }
+  .chips em { flex-basis: 100%; font-style: normal; color: var(--faint); font-size: 13px; }
+  .chips.gone span { color: var(--faint); text-decoration: line-through; text-decoration-color: var(--orange); border-style: dashed; }
+  .chips.locked span { border-color: rgba(255, 106, 26, 0.45); }
+  .chips.scattered span:nth-child(2n) { transform: rotate(-3deg); }
+  .chips.scattered span:nth-child(3n) { transform: rotate(4deg) translateY(3px); }
+  .fix { margin-top: 40px; max-width: 44em; font-size: 19px; line-height: 1.55; }
+  .proofs { display: grid; gap: 16px; margin-top: 44px; }
+  .proof { display: flex; flex-direction: column; background: var(--surface); border: 1px solid var(--line); border-radius: 18px; overflow: hidden; text-decoration: none; color: inherit; transition: border-color 0.2s; }
+  .proof:hover { border-color: var(--orange); }
+  .p-img { aspect-ratio: 16 / 9; overflow: hidden; background: #f4f2ee; border-bottom: 1px solid var(--line); }
+  .p-img :global(img) { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top left; }
+  .p-body { display: flex; flex-direction: column; flex: 1; padding: 24px 26px 26px; }
+  .p-who { color: var(--muted); font-size: 15px; }
+  .p-n { margin-top: 14px; font-size: clamp(44px, 5vw, 60px); font-weight: 600; letter-spacing: -0.03em; line-height: 1; color: var(--orange); }
+  .p-l { margin-top: 10px; font-size: 17px; line-height: 1.5; max-width: 26em; }
+  .p-body .text-link { margin-top: auto; padding-top: 20px; }
+  .build-card { margin-top: 36px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 20px 32px; background: var(--surface); border: 1px solid rgba(255, 106, 26, 0.45); border-radius: 18px; padding: clamp(22px, 3vw, 32px); }
+  .build-price { font-size: clamp(40px, 5vw, 56px); font-weight: 600; letter-spacing: -0.03em; line-height: 1; color: var(--accent-text); }
+  .build-note { margin-top: 10px; color: var(--muted); }
+  .your-time { margin-top: 22px; padding-top: 20px; border-top: 1px solid var(--line); max-width: 640px; }
+  .yt-h { color: var(--muted); }
+  .yt-h b { color: var(--fg); font-weight: 500; }
+  .yt-bar { display: flex; gap: 3px; height: 10px; margin-top: 12px; border-radius: 999px; overflow: hidden; }
+  .yt-bar i { background: var(--orange); }
+  .yt-bar i:nth-child(2n) { opacity: 0.55; }
+  .yt-list { list-style: none; margin: 10px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 14px; color: var(--faint); }
+  .yt-list span { color: var(--fg); margin-right: 5px; }
+  .whats-in { margin-top: 44px; font-weight: 500; font-size: 22px; letter-spacing: -0.02em; }
+  .how-lead { margin-top: 20px; color: var(--muted); font-size: 18px; line-height: 1.55; }
+  @media (min-width: 760px) { .risks { grid-template-columns: repeat(3, minmax(0, 1fr)); } .proofs { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
   .familiar-cta { margin-top: 40px; }
 
   .how { display: grid; gap: 48px; align-items: center; }
@@ -367,16 +389,7 @@ const lockIcon = "M5 7V5a3 3 0 0 1 6 0v2h.5A1.5 1.5 0 0 1 13 8.5v5a1.5 1.5 0 0 1
   .step h3 { font-weight: 500; font-size: 22px; letter-spacing: -0.025em; line-height: 1.3; }
   .step p { grid-column: 2; color: var(--muted); }
 
-  .offers-sec { padding-top: 0; }
   .head { display: flex; justify-content: space-between; align-items: end; gap: 24px 40px; flex-wrap: wrap; margin-bottom: clamp(44px, 6vw, 72px); }
-  .offer-grid { display: grid; gap: 16px; }
-  .offer { display: flex; flex-direction: column; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 28px 28px 26px; text-decoration: none; transition: border-color 0.15s ease, transform 0.15s ease; }
-  .offer:hover { border-color: rgba(255, 106, 26, 0.55); transform: translateY(-2px); }
-  .offer.featured { border-color: rgba(255, 106, 26, 0.45); background: linear-gradient(160deg, rgba(255, 106, 26, 0.12), var(--surface) 60%); }
-  .offer h3 { font-weight: 500; font-size: 24px; letter-spacing: -0.025em; }
-  .offer .price { color: var(--accent-text); font-weight: 500; margin-top: 4px; }
-  .offer p { color: var(--muted); margin-top: 10px; flex: 1; }
-  .offer .more { display: inline-flex; align-items: center; gap: 8px; margin-top: 22px; color: var(--accent-text); font-weight: 500; }
 
   #work { padding-top: 0; }
 
@@ -390,9 +403,7 @@ const lockIcon = "M5 7V5a3 3 0 0 1 6 0v2h.5A1.5 1.5 0 0 1 13 8.5v5a1.5 1.5 0 0 1
 
   @media (min-width: 1024px) {
     .how { grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr); gap: clamp(48px, 6vw, 96px); }
-    .offer-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .fit { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-    .familiar { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   }
   @media (max-width: 1023px) {
     .screens { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; scrollbar-width: none; }
@@ -409,8 +420,5 @@ const lockIcon = "M5 7V5a3 3 0 0 1 6 0v2h.5A1.5 1.5 0 0 1 13 8.5v5a1.5 1.5 0 0 1
     .addr { height: 18px; font-size: 10px; }
     .spacer { width: 0; }
     .fit p { font-size: 18px; }
-    .familiar p { font-size: 17px; }
-    .familiar li { padding: 20px 20px 20px 46px; }
-    .familiar li::before { left: 16px; top: 12px; }
   }
 </style>

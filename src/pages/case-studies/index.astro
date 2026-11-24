@@ -6,7 +6,7 @@ import ClosingCta from "../../components/ClosingCta.astro";
 import { breadcrumb } from "../../lib/schema";
 import { site } from "../../lib/site";
 
-const cases = (await getCollection("case-studies")).sort((a, b) => a.data.order - b.data.order);
+const cases = (await getCollection("case-studies", (c) => !c.data.hidden)).sort((a, b) => a.data.order - b.data.order);
 const title = "Case Studies - Motive11";
 const description = "Custom software, AI systems, and websites I've built for engineering firms, law firms, agencies, and local businesses.";
 ---

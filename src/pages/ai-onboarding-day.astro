@@ -10,11 +10,9 @@ import { breadcrumb } from "../lib/schema";
 import { site } from "../lib/site";
 import portrait from "../assets/mark/portrait.webp";
 
-// Copy and structure mirror markszymanski.co/ai-onboarding-day on purpose (Mark, November 6, 2026).
+// Off the menu since November 23, 2026 (the Build replaced it): kept as a page Mark can send by link,
+// so it's noindex and left out of the sitemap. Started as a mirror of markszymanski.co/ai-onboarding-day.
 const rate = usd(pricing.onboardingDay.rate);
-const p = pricing.fractional;
-const fractionalRate = p.earlySpotsLeft > 0 ? p.earlyMonthly : p.monthly;
-const inWords = (n: number) => ["zero", "one", "two", "three", "four", "five", "six"][n] ?? String(n);
 
 const title = "AI Onboarding Day - Motive11";
 const description = "You know AI could be doing more for your business. In one day I learn how it runs, put it in one place you own, and get AI doing real work on it before I leave.";
@@ -68,7 +66,7 @@ const notForYou = [
   "Custom software built for your team (that's a bigger project, and this is a good place to start it)",
   "An army of AI agents talking to each other (you probably don't need one, and I'll tell you why)",
   "Everything fixed in one day (nobody can do that, and I won't pretend to)",
-  "Someone to run it for you every week (that's Fractional)",
+  "Your own AIOS, built and connected to your systems (that's the Build)",
 ];
 
 const faqs = [
@@ -94,7 +92,7 @@ const faqs = [
   },
   {
     q: "What happens after the day?",
-    a: "It's yours and it runs without me. Nothing is included after the day, so a question later is an advisory call. If you want me working on your business every month, that's Fractional, where I'm your AI and systems lead.",
+    a: "It's yours and it runs without me. Nothing is included after the day, so a question later is an advisory call. If you want your own AIOS built and connected to your systems, that's the Build.",
   },
 ];
 
@@ -117,7 +115,7 @@ const schema = [
 ];
 ---
 
-<BaseLayout title={title} description={description} schema={schema}>
+<BaseLayout title={title} description={description} schema={schema} noindex>
   <section class="hero">
     <div class="wrap col">
       <span class="label">AI Onboarding Day</span>
@@ -259,7 +257,7 @@ const schema = [
       <h2>One day won't fix everything. Anyone who tells you it will is selling you something.</h2>
       <div class="prose-m11 body">
         <p>You've run your business for years, and how it really works lives in your head and across a dozen apps. One day gets it out, written down, and working on a couple of real jobs. That's a head start, not the finish line.</p>
-        <p>After that, somebody has to keep it going: adding to it, putting it to work on the next thing, and making sure your team actually uses it. That's either someone on your team who champions it (I'll train them on the day), or it's me, from the outside, as your <a href="/fractional">fractional AI and systems lead</a>.</p>
+        <p>After that, somebody has to keep it going: adding to it, putting it to work on the next thing, and making sure your team actually uses it. That's either someone on your team who champions it (I'll train them on the day), or it's the <a href="/process">Build</a>: your own AIOS, built in 10 business days, which I can keep running for you after.</p>
       </div>
     </div>
   </section>
@@ -329,11 +327,11 @@ const schema = [
   <section class="longer">
     <div class="wrap col reveal">
       <h2>Looking for something longer term?</h2>
-      <p class="longer-lead">One day is the start. If you want me on your business every month, that's Fractional, where I'm your AI and systems lead.</p>
-      <a class="pcard" href="/fractional">
-        <span class="pcard-name">Fractional AI & Systems Lead</span>
-        <span class="pcard-price">${fractionalRate}/month{p.earlySpotsLeft > 0 && ` for the next ${p.earlySpotsLeft === 1 ? "client" : `${inWords(p.earlySpotsLeft)} clients`}`}</span>
-        <span class="pcard-body">Your website, your systems, and your AI, run by me, working on whatever moves your business most.</span>
+      <p class="longer-lead">One day is the start. The Build is the whole thing: your own AIOS, live in 10 business days.</p>
+      <a class="pcard" href="/process">
+        <span class="pcard-name">The Build</span>
+        <span class="pcard-price">{usd(pricing.build.rate)}, 10 business days</span>
+        <span class="pcard-body">Your business written down, your systems connected, and your HQ, the app your team runs on, all in your own accounts.</span>
       </a>
     </div>
   </section>

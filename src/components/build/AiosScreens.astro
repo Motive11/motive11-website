@@ -1,0 +1,148 @@
+---
+// What every Build ships, as two deliverables (Mark, November 23, 2026): the AIOS is the context (the
+// business written down, which every AI works from) and the HQ is the app built on it. "HQ" is the app's
+// name on this site; in a client's own copy it's "<Company> HQ". The HQ tabs are screens from the AIOS
+// starter (~/projects/motive11/aios-starter README, "What's in it"); keep the "Also in it" line true when a
+// screen is added or dropped there. Screenshots are the fictional Halden demo (AIOS
+// entities/motive11/showcase/), never a real business.
+import { Image } from "astro:assets";
+import knowledge from "../../assets/showcase/hq/knowledge.webp";
+import today from "../../assets/showcase/hq/today.webp";
+import jobs from "../../assets/showcase/hq/jobs.webp";
+import leads from "../../assets/showcase/hq/leads.webp";
+import finance from "../../assets/showcase/hq/finance.webp";
+import drafts from "../../assets/showcase/hq/drafts.webp";
+import automations from "../../assets/showcase/hq/automations.webp";
+
+const icon = {
+  book: "M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5zM4 20.5A2.5 2.5 0 0 0 6.5 23H20",
+  spark: "M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9zM19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8z",
+  lock: "M5 11h14v10H5zM8 11V7.5a4 4 0 0 1 8 0V11",
+  data: "M4 6c0-1.7 3.6-3 8-3s8 1.3 8 3-3.6 3-8 3-8-1.3-8-3zM4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3",
+  home: "M3 11l9-7 9 7M5 9.5V20h5v-6h4v6h5V9.5",
+  board: "M4 4h4v16H4zM10 4h4v11h-4zM16 4h4v7h-4z",
+  funnel: "M3 4h18l-7 8.5V19l-4 2v-8.5z",
+  chart: "M4 20h16M7 16v-5M12 16V6M17 16v-8",
+  draft: "M14 3H6v18h12V7zM14 3v4h4M9 12h6M9 16h4",
+  bolt: "M13 2L4 14h7l-1 8 9-12h-7z",
+};
+
+const points = [
+  [icon.book, "Written from your own data and short interviews with your team. Your HQ shows it on its Knowledge screen."],
+  [icon.data, "Your data too: the systems you already use feed one database in your company's account, so your numbers are yours, not rented."],
+  [icon.spark, "Every AI your team uses works from it, so it already knows your business."],
+  [icon.lock, "In your company's accounts. When someone leaves, nothing goes with them."],
+];
+
+const screens = [
+  { name: "Today", path: icon.home, img: today, text: "The numbers, what's late, and everyone's tasks, the moment you open it." },
+  { name: "Jobs", path: icon.board, img: jobs, text: "Every job by stage, in your words, with its value and its next step." },
+  { name: "Leads", path: icon.funnel, img: leads, text: "Every inquiry, where it came from, and which ones you win." },
+  { name: "Finance", path: icon.chart, img: finance, text: "Read from your own books: cash, what's owed, and what's coming in." },
+  { name: "Drafts", path: icon.draft, img: drafts, text: "What the AI wrote, waiting for a person to say yes before anything goes out." },
+  { name: "Automations", path: icon.bolt, img: automations, text: "What runs on its own, how often, and whether it worked." },
+];
+---
+<div class="deliver">
+  <article class="part aios">
+    <div class="copy">
+      <p class="tag"><span class="n">1</span>The context</p>
+      <h3>Your AIOS</h3>
+      <p class="lead-p">Everything your business knows, written down as plain files your company owns: what you sell, how you price it, how the work gets done, and who decides.</p>
+      <ul class="points">
+        {points.map(([d, t]) => (
+          <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d={d} /></svg><span>{t}</span></li>
+        ))}
+      </ul>
+    </div>
+    <figure class="frame">
+      <Image src={knowledge} alt="The Knowledge screen in a demo AIOS for a made-up roofing company: the business written down, page by page." widths={[700, 1100, 1600]} sizes="(min-width: 1024px) 620px, 100vw" loading="lazy" />
+    </figure>
+  </article>
+
+  <article class="part hq" data-hq>
+    <div class="copy">
+      <p class="tag"><span class="n">2</span>The app</p>
+      <h3>Your HQ</h3>
+      <p class="lead-p">The app your team runs the business on. It's built on your AIOS and shaped around your work: your stages, your fields, your words. It reads from the software you already use, like your calendar and your books, instead of replacing it.</p>
+    </div>
+    <div class="tabs" role="tablist" aria-label="Screens in your HQ">
+      {screens.map((s, i) => (
+        <button type="button" role="tab" class="tab" aria-selected={i === 0 ? "true" : "false"} data-tab={i}>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d={s.path} /></svg>{s.name}
+        </button>
+      ))}
+    </div>
+    <figure class="frame stack">
+      {screens.map((s, i) => (
+        <div class:list={["slide", { on: i === 0 }]} data-slide={i} role="tabpanel">
+          <Image src={s.img} alt={`The ${s.name} screen in a demo HQ for a made-up roofing company.`} widths={[700, 1100, 1600, 2000]} sizes="(min-width: 1240px) 1120px, 100vw" loading={i === 0 ? "eager" : "lazy"} />
+        </div>
+      ))}
+      <figcaption data-cap>{screens[0].text}</figcaption>
+    </figure>
+    <p class="also">Also in it: tasks, a calendar of what's due, customers and contacts, reports, analytics, answers from your own records, your team, and every system you pay for.</p>
+    <a class="text-link try" href="https://demo.motive11.com/halden-roofing" target="_blank" rel="noopener">Click around this one yourself <svg class="arrow"><use href="#arrow" /></svg></a>
+  </article>
+  <p class="fine">Both live in your company's accounts, with nightly backups and as many logins as you want. Shown here: a demo for a made-up roofing company.</p>
+</div>
+
+<script is:inline define:vars={{ caps: screens.map((s) => s.text) }}>
+  (function () {
+    var root = document.querySelector("[data-hq]");
+    if (!root) return;
+    var tabs = root.querySelectorAll("[data-tab]");
+    var slides = root.querySelectorAll("[data-slide]");
+    var cap = root.querySelector("[data-cap]");
+    var i = 0, timer = null, touched = false;
+    function show(n) {
+      i = n;
+      tabs.forEach(function (t, k) { t.setAttribute("aria-selected", k === n ? "true" : "false"); });
+      slides.forEach(function (s, k) { s.classList.toggle("on", k === n); });
+      cap.textContent = caps[n];
+    }
+    tabs.forEach(function (t, k) {
+      t.addEventListener("click", function () { touched = true; clearInterval(timer); show(k); });
+    });
+    // Cycles on its own only while on screen and until someone picks a tab.
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches || !("IntersectionObserver" in window)) return;
+    new IntersectionObserver(function (es) {
+      clearInterval(timer);
+      if (!touched && es[0].isIntersecting) timer = setInterval(function () { show((i + 1) % tabs.length); }, 4500);
+    }, { threshold: 0.5 }).observe(root);
+  })();
+</script>
+
+<style>
+  .deliver { display: grid; gap: 20px; margin-top: 28px; }
+  .part { background: var(--surface); border: 1px solid var(--line); border-radius: 20px; padding: clamp(22px, 3.4vw, 40px); }
+  .tag { display: flex; align-items: center; gap: 10px; margin: 0; color: var(--orange); font-size: 15px; font-weight: 500; }
+  .n { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: var(--orange); color: #fff; font-size: 14px; letter-spacing: 0; }
+  h3 { margin: 12px 0 0; font-size: clamp(28px, 3.2vw, 38px); line-height: 1.1; }
+  .lead-p { margin: 12px 0 0; max-width: 34em; color: var(--muted); font-size: 18px; line-height: 1.55; }
+  svg { width: 20px; height: 20px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+  .points { list-style: none; margin: 26px 0 0; padding: 0; display: grid; gap: 16px; }
+  .points li { display: flex; gap: 14px; align-items: flex-start; font-size: 16px; line-height: 1.5; }
+  .points svg { width: 38px; height: 38px; padding: 9px; border-radius: 10px; background: rgba(255, 106, 26, 0.12); color: var(--orange); }
+  .points span { padding-top: 7px; }
+  .frame { margin: 26px 0 0; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: #f4f2ee; }
+  .frame :global(img) { display: block; width: 100%; height: auto; }
+  .tabs { display: flex; gap: 8px; margin-top: 24px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab { display: inline-flex; align-items: center; gap: 8px; flex: none; padding: 10px 16px; border-radius: 999px; border: 1px solid var(--line); background: transparent; color: var(--muted); font: inherit; font-size: 15px; cursor: pointer; transition: color 0.2s, border-color 0.2s, background 0.2s; }
+  .tab:hover { color: var(--fg); border-color: var(--orange); }
+  .tab[aria-selected="true"] { color: #fff; background: var(--orange); border-color: var(--orange); }
+  .tab svg { width: 18px; height: 18px; }
+  .stack { display: grid; margin-top: 16px; }
+  .slide { grid-area: 1 / 1; opacity: 0; transition: opacity 0.5s ease; }
+  .slide.on { opacity: 1; }
+  .stack figcaption { grid-area: 2 / 1; padding: 14px 18px; background: var(--surface); border-top: 1px solid var(--line); color: var(--fg); font-size: 16px; }
+  .also { margin: 18px 0 0; color: var(--muted); font-size: 15px; line-height: 1.5; }
+  .try { display: inline-flex; margin-top: 14px; }
+  .fine { margin: 4px 0 0; color: var(--faint); font-size: 14px; }
+  @media (min-width: 1024px) {
+    .aios { display: grid; grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr); gap: 48px; align-items: center; }
+    .aios .frame { margin-top: 0; }
+  }
+  @media (prefers-reduced-motion: reduce) { .slide { transition: none; } }
+</style>
