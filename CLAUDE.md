@@ -25,6 +25,10 @@ Details in `README.md`.
   in the same task.
 - **Every new page ships with its share image.** `npm run build` makes it in `public/og/`; commit it with
   the page and look at it first. How it works: `README.md`, "Share images".
+- **Nothing scrolls sideways on a phone.** After any visible change, run AIOS
+  `pipelines/web-build/check_widths.py --full` on every page it shows up on (the AIOS/HQ section is on
+  `/` and `/process`) and get zero issues. A CSS grid holding a wide row (tabs, a table) needs
+  `grid-template-columns: minmax(0, 1fr)`, or the row stretches the page instead of scrolling in its box.
 
 ## Content-Security-Policy: new outside domains go in `public/_headers`
 
