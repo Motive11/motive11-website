@@ -114,8 +114,8 @@ const screens = [
 </script>
 
 <style>
-  .deliver { display: grid; gap: 20px; margin-top: 28px; }
-  .part { background: var(--surface); border: 1px solid var(--line); border-radius: 20px; padding: clamp(22px, 3.4vw, 40px); }
+  .deliver { display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; margin-top: 28px; }
+  .part { min-width: 0; background: var(--surface); border: 1px solid var(--line); border-radius: 20px; padding: clamp(22px, 3.4vw, 40px); }
   .tag { display: flex; align-items: center; gap: 10px; margin: 0; color: var(--orange); font-size: 15px; font-weight: 500; }
   .n { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: var(--orange); color: #fff; font-size: 14px; letter-spacing: 0; }
   h3 { margin: 12px 0 0; font-size: clamp(28px, 3.2vw, 38px); line-height: 1.1; }
@@ -133,7 +133,7 @@ const screens = [
   .tab:hover { color: var(--fg); border-color: var(--orange); }
   .tab[aria-selected="true"] { color: #fff; background: var(--orange); border-color: var(--orange); }
   .tab svg { width: 18px; height: 18px; }
-  .stack { display: grid; margin-top: 16px; }
+  .stack { display: grid; grid-template-columns: minmax(0, 1fr); margin-top: 16px; }
   .slide { grid-area: 1 / 1; opacity: 0; transition: opacity 0.5s ease; }
   .slide.on { opacity: 1; }
   .stack figcaption { grid-area: 2 / 1; padding: 14px 18px; background: var(--surface); border-top: 1px solid var(--line); color: var(--fg); font-size: 16px; }
